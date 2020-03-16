@@ -11,7 +11,9 @@ module.exports = function(app) {
   // Initializing route groups
   const apiRoutes = express.Router(),
         authRoutes = express.Router()
-
+  
+  // Set url for API group routes
+  app.use('/api', apiRoutes)
   //=================================================== Auth Routes ===================================================//
 
   // Set auth routes as subgroup/middleware to apiRoutes
@@ -27,6 +29,5 @@ module.exports = function(app) {
   authRoutes.post('/login', requireLogin, AuthenticationController.login)
 
 
-  // Set url for API group routes
-  app.use('/api', apiRoutes)
+  
 }
