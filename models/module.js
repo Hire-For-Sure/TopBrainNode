@@ -5,9 +5,18 @@ const mongoose = require('mongoose'),
       Challenge = require('./challenge')
     
 const ModuleSchema = new Schema({
-    name: String,
-    description: String,
-    image: String,
+    name: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    image: {
+        type: String,
+        required: true
+    },
     courses: [
         {type: Schema.Types.ObjectId, ref: Course}
     ],

@@ -8,13 +8,14 @@ const requireAuth = passport.authenticate('jwt', { session: false })
 const requireLogin = passport.authenticate('local', { session: false })
 
 module.exports = function(app) {
-  // Initializing route groups
-  const apiRoutes = express.Router(),
-        authRoutes = express.Router()
+  
+  const apiRoutes = express.Router()
   
   // Set url for API group routes
   app.use('/api', apiRoutes)
+
   //=================================================== Auth Routes ===================================================//
+  authRoutes = express.Router()
 
   // Set auth routes as subgroup/middleware to apiRoutes
   apiRoutes.use('/auth', authRoutes)
@@ -27,6 +28,14 @@ module.exports = function(app) {
 
   // Login route
   authRoutes.post('/login', requireLogin, AuthenticationController.login)
+
+  //===================================================== Blog Routes ==================================================//
+  const BlogController = require('./controllers/blog')
+  blogRoutes = express.Router()
+
+  apiRoutes.use('/blog', blogRoutes)
+  blogRoutes.get('/', BlogController.getBlogs)
+  blogRoutes.post('/', BlogController.addBlog)
 
 
   
