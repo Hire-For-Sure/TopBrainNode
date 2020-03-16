@@ -1,4 +1,5 @@
 const AuthenticationController = require('./controllers/authentication'),
+			ProfileController = require('./controllers/profile'),
       express = require('express'),
       passportService = require('./config/passport'),
       passport = require('passport')
@@ -10,7 +11,8 @@ const requireLogin = passport.authenticate('local', { session: false })
 module.exports = function(app) {
   // Initializing route groups
   const apiRoutes = express.Router(),
-        authRoutes = express.Router()
+        authRoutes = express.Router(),
+				userRoutes = express.Router()
   
   // Set url for API group routes
   app.use('/api', apiRoutes)
@@ -28,6 +30,16 @@ module.exports = function(app) {
   // Login route
   authRoutes.post('/login', requireLogin, AuthenticationController.login)
 
+//=================================================== Profile Routes ===================================================//
+
+  // Set user routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/user', userRoutes)
+
+  // Get Profile route
+  userRoutes.get('/', requireAuth, ProfileController.getProfile)
+
+  // Add More Interests route
+  userRoutes.post('/interests', requireAuth, ProfileController.addInterests)
 
   
 }
