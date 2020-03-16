@@ -23,7 +23,8 @@ function setUserInfo(request) {
 
 // Get Profile Route
 exports.getProfile = function(req, res, next){
-  User.findOne({ '_id': req.body._id }, function(err, user){
+	var queryOptions = (req.body._id) ? { '_id': req.body._id } : { '_id': req.user._id }
+  User.findOne(queryOptions, function(err, user){
     if (err) {
       res.send({ error: err})
       return next(err)
@@ -38,7 +39,7 @@ exports.getProfile = function(req, res, next){
 // Adding more interests
 exports.addInterests = function(req, res, next){
 	const interests = req.body.interests
-	User.findOneandUpdate({ '_id': req.user._id }, { $push: { 'interests': { $each: interests } } }, function(err, user){
+	User.findOneAndUpdate({ '_id': req.user._id }, { $push: { 'interests': { $each: interests } } }, function(err, user){
     if (err) {
       res.send({ error: err})
       return next(err)
