@@ -107,7 +107,7 @@ exports.register = function(req, res, next) {
 // Update Route
 exports.update = function(req, res, next) {
   // Check for registration errors
-  const _id = req.body._id
+  const _id = req.user._id
   const university = req.body.university
   const branch = req.body.branch
   const year_graduation = req.body.year_graduation
@@ -151,8 +151,7 @@ exports.update = function(req, res, next) {
             let userInfo = setUserInfo(user)
 
             res.status(201).json({
-              token: 'JWT ' + generateToken(userInfo),
-              _id: user._id
+            	message: 'Success'
             })
           })
       })
