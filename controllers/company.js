@@ -27,3 +27,20 @@ exports.addCompany = function(req, res, next){
         res.status(201).json(company)
     })
 }
+
+exports.deleteCompany = function(req, res, next){
+    const _id = req.body._id
+    Company.findOneAndDelete({
+        _id: _id
+    }, function(err, company){
+        if(err){return next(err)}
+        if(!company){
+            return res.status(422).send({
+                error: "No company exists with the provided _id!"
+            })
+        }
+        return res.status(200).json({
+            status: "SUCCESS"
+        })   
+    })
+}
