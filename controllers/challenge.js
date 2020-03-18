@@ -15,11 +15,11 @@ exports.addChallenge = function(req, res, next){
     const link = req.body.link
     const points = req.body.points
     if(!name)
-        return res.status(422).json({name: "Name is required"})
+        return res.status(422).json({error: "Name is required"})
     if(!link)
-        return res.status(422).json({name: "Link is required"})
+        return res.status(422).json({error: "Link is required"})
     if(!points)
-        return res.status(422).json({name: "Points are required"})
+        return res.status(422).json({error: "Points are required"})
     let challenge = new Challenge({
         name: name,
         link: link,
@@ -28,7 +28,7 @@ exports.addChallenge = function(req, res, next){
     challenge.save(function(err, challenge){
         if(err)
             return next(err)
-        res.status(201).json(challenge)
+        return res.status(201).json(challenge)
     })
 }
 
@@ -59,8 +59,7 @@ exports.editChallenge = function(req, res, next){
         const name = req.body.name
         const link = req.body.link
         const points = req.body.points
-        if(name)challenge.name = name
-        
+        if(name)challenge.name = name        
         if(link)challenge.link = link
         if(typeof points !== Number)challenge.points = points
         challenge.save(function(err, challenge){
