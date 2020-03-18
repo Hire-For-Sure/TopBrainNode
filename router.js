@@ -3,6 +3,7 @@ const AuthenticationController = require('./controllers/authentication'),
       BlogController = require('./controllers/blog'),
       ChallengeController = require('./controllers/challenge'),
       CompanyController = require('./controllers/company'),
+      CourseController = require('./controllers/course'),
       express = require('express'),
       passportService = require('./config/passport'),
       passport = require('passport')
@@ -19,7 +20,8 @@ module.exports = function(app) {
         userRoutes = express.Router(),
         blogRoutes = express.Router(),
         challengeRoutes = express.Router(),
-        companyRoutes = express.Router()
+        companyRoutes = express.Router(),
+        courseRoutes = express.Router()
   
   // Set url for API group routes
   app.use('/api', apiRoutes)
@@ -68,36 +70,53 @@ module.exports = function(app) {
 
   //=================================================== Challenge Routes ===================================================//
 
-  // Set blog routes as subgroup/middleware to apiRoutes
+  // Set challenge routes as subgroup/middleware to apiRoutes
   apiRoutes.use('/challenge', challengeRoutes)
 
-  // Get all blogs route
+  // Get all challenge route
   challengeRoutes.get('/', ChallengeController.getChallenges)
 
-  // Create blog route
+  // Create challenge route
   challengeRoutes.post('/', ChallengeController.addChallenge)
 
-  // Delete blog route
+  // Delete challenge route
   challengeRoutes.delete('/', ChallengeController.deleteChallenge)
 
-  // Update blog route
+  // Update challenge route
   challengeRoutes.patch('/', ChallengeController.editChallenge)
 
   //=================================================== Company Routes ===================================================//
 
-  // Set blog routes as subgroup/middleware to apiRoutes
+  // Set company routes as subgroup/middleware to apiRoutes
   apiRoutes.use('/company', companyRoutes)
 
-  // Get all blogs route
+  // Get all company route
   companyRoutes.get('/', CompanyController.getCompanies)
 
-  // Create blog route
+  // Create company route
   companyRoutes.post('/', CompanyController.addCompany)
 
-  // Delete blog route
+  // Delete company route
   companyRoutes.delete('/', CompanyController.deleteCompany)
 
-  // Update blog route
+  // Update company route
   companyRoutes.patch('/', CompanyController.editCompany)
+  
+  //=================================================== Course Routes ===================================================//
+
+  // Set course routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/course', courseRoutes)
+
+  // Get all course route
+  courseRoutes.get('/', CourseController.getCourses)
+
+  // Create course route
+  courseRoutes.post('/', CourseController.addCourse)
+
+  // Delete course route
+  courseRoutes.delete('/', CourseController.deleteCourse)
+
+  // Update course route
+  courseRoutes.patch('/', CourseController.editCourse)
   
 }

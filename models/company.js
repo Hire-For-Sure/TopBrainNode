@@ -4,6 +4,10 @@ const mongoose = require('mongoose'),
 const CompanySchema = new Schema({
     image: {
         type: String,
+        validate: {
+            validator: validator.urlValidator,
+            message: props => `${props.value} is not a valid URL!`
+        },
         required: true
     },
     name: {

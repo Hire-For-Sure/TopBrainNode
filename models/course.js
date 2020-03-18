@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'),
-    Schema = mongoose.Schema
+    Schema = mongoose.Schema,
+    validator = require('./../utils/validators')
 
 const CourseSchema = new Schema({
     name: {
@@ -16,8 +17,8 @@ const CourseSchema = new Schema({
     },
     objectives: [
         {
-            goal: String,
-            rank: Number
+            goal: {type: String, required: true},
+            rank: {type: Number, required: true}
         }
     ]
 })
