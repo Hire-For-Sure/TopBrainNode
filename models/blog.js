@@ -17,8 +17,8 @@ const BlogSchema = new Schema({
     },
     objectives: [
         {
-            goal: String,
-            rank: Number
+            goal: {type: String, required: true},
+            rank: {type: Number, required: true}
         }
     ]
 })

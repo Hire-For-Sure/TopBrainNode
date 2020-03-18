@@ -3,7 +3,7 @@ const AuthenticationController = require('./controllers/authentication'),
       BlogController = require('./controllers/blog'),
       express = require('express'),
       passportService = require('./config/passport'),
-      passport = require('passport'),
+      passport = require('passport')
       
 
 // Middleware to require login/auth
@@ -44,6 +44,12 @@ module.exports = function(app) {
 
   // Create blog route
   blogRoutes.post('/', BlogController.addBlog)
+
+  // Delete blog route
+  blogRoutes.delete('/', BlogController.deleteBlog)
+
+  // Update blog route
+  blogRoutes.patch('/', BlogController.editBlog)
 
 //=================================================== Profile Routes ===================================================//
 
