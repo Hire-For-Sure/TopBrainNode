@@ -2,6 +2,7 @@ const AuthenticationController = require('./controllers/authentication'),
       ProfileController = require('./controllers/profile'),
       BlogController = require('./controllers/blog'),
       ChallengeController = require('./controllers/challenge'),
+      CompanyController = require('./controllers/company'),
       express = require('express'),
       passportService = require('./config/passport'),
       passport = require('passport')
@@ -17,7 +18,8 @@ module.exports = function(app) {
         authRoutes = express.Router(),
         userRoutes = express.Router(),
         blogRoutes = express.Router(),
-        challengeRoutes = express.Router()
+        challengeRoutes = express.Router(),
+        companyRoutes = express.Router()
   
   // Set url for API group routes
   app.use('/api', apiRoutes)
@@ -80,5 +82,22 @@ module.exports = function(app) {
 
   // Update blog route
   challengeRoutes.patch('/', ChallengeController.editChallenge)
+
+  //=================================================== Company Routes ===================================================//
+
+  // Set blog routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/company', companyRoutes)
+
+  // Get all blogs route
+  companyRoutes.get('/', CompanyController.getCompanies)
+
+  // Create blog route
+  companyRoutes.post('/', CompanyController.addCompany)
+
+  // Delete blog route
+  companyRoutes.delete('/', CompanyController.deleteCompany)
+
+  // Update blog route
+  companyRoutes.patch('/', CompanyController.editCompany)
   
 }
