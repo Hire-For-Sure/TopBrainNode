@@ -44,3 +44,24 @@ exports.deleteCompany = function(req, res, next){
         })   
     })
 }
+
+exports.editCompany = function(req, res, next){
+    const _id = req.body._id
+    Company.findOne({_id: _id}, function(err, company){
+        if(err)
+            return next(err)
+        if(!company)
+            return res.status(422).send({error: "No company exists with the provided _id!"})
+        const name = req.body.name
+        const image = req.body.image
+
+        if(name)company.name = name        
+        if(image)company.image = image
+        company.save(function(err, company){
+            if(err)
+                return next(err)
+            res.status(200).json(company)
+        })
+
+    })
+}
