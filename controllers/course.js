@@ -46,3 +46,24 @@ exports.deleteCourse = function(req, res, next){
         })
     })
 }
+
+exports.editCourse = function(req, res, next){
+    const _id = req.body._id
+    Course.findOne({_id: _id}, function(err, course){
+        if(err)
+            return next(err)
+        if(!course)
+            return res.status(422).send({error: "No course exists with the provided _id!"})
+        const name = req.body.name
+        const link = req.body.link
+        const objectives = req.body.objectives
+        if(name)course.name = name
+        if(link)course.link = link
+        if(objectives)course.objectives = objectives
+        course.save(function(err, course){
+            if(err)
+                return next(err)
+            return res.status(200).json(course)
+        })
+    })
+}
