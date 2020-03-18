@@ -29,3 +29,20 @@ exports.addCourse = function(req, res, next){
         return res.status(201).json(course)
     })
 }
+
+exports.deleteCourse = function(req, res, next){
+    const _id = req.body._id
+    Course.findOneAndDelete({
+        _id: _id
+    }, function(err, course){
+        if(err)return next(err)
+        if(!course){
+            return res.status(422).send({
+                error: "No course exists with the provided _id!"
+            })
+        }
+        return res.status(200).json({
+            status: "SUCCESS"
+        })
+    })
+}
