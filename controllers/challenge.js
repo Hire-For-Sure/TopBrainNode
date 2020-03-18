@@ -62,7 +62,7 @@ exports.editChallenge = function(req, res, next){
         if(name)challenge.name = name
         
         if(link)challenge.link = link
-        if(points)challenge.points = points
+        if(typeof points !== Number)challenge.points = points
         challenge.save(function(err, challenge){
             if(err)
                 return next(err)

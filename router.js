@@ -1,6 +1,7 @@
 const AuthenticationController = require('./controllers/authentication'),
       ProfileController = require('./controllers/profile'),
       BlogController = require('./controllers/blog'),
+      ChallengeController = require('./controllers/challenge'),
       express = require('express'),
       passportService = require('./config/passport'),
       passport = require('passport')
@@ -15,7 +16,8 @@ module.exports = function(app) {
   const apiRoutes = express.Router(),
         authRoutes = express.Router(),
         userRoutes = express.Router(),
-        blogRoutes = express.Router()
+        blogRoutes = express.Router(),
+        challengeRoutes = express.Router()
   
   // Set url for API group routes
   app.use('/api', apiRoutes)
@@ -62,5 +64,21 @@ module.exports = function(app) {
   // Add More Interests route
   userRoutes.post('/interests', requireAuth, ProfileController.addInterests)
 
+  //=================================================== Challenge Routes ===================================================//
+
+  // Set blog routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/challenge', challengeRoutes)
+
+  // Get all blogs route
+  challengeRoutes.get('/', ChallengeController.getChallenges)
+
+  // Create blog route
+  challengeRoutes.post('/', ChallengeController.addChallenge)
+
+  // Delete blog route
+  challengeRoutes.delete('/', ChallengeController.deleteChallenge)
+
+  // Update blog route
+  challengeRoutes.patch('/', ChallengeController.editChallenge)
   
 }
