@@ -14,15 +14,61 @@ exports.addChallenge = function(req, res, next){
     const name = req.body.name
     const link = req.body.link
     const points = req.body.points
-    let challenge = new Blog({
+    if(!name)
+        return res.status(422).json({name: "Name is required"})
+    if(!link)
+        return res.status(422).json({name: "Link is required"})
+    if(!points)
+        return res.status(422).json({name: "Points are required"})
+    let challenge = new Challenge({
         name: name,
         link: link,
         points: points
     })
-    challenge.save(function(err, blog){
+    challenge.save(function(err, challenge){
         if(err)
             return next(err)
         res.status(201).json(challenge)
+    })
+}
+
+exports.deleteChallenge = function(req, res, next){
+    const _id = req.body._id
+    Challenge.findOneAndDelete({
+        _id: _id
+    }, function(err, challenge){
+        if(err){return next(err)}
+        if(!challenge){
+            return res.status(422).send({
+                error: "No challenge exists with the provided _id!"
+            })
+        }
+        return res.status(200).json({
+            status: "SUCCESS"
+        })   
+    })
+}
+
+exports.editChallenge = function(req, res, next){
+    const _id = req.body._id
+    Challenge.findOne({_id: _id}, function(err, challenge){
+        if(err)
+            return next(err)
+        if(!challenge)
+            return res.status(422).send({error: "No challenge exists with the provided _id!"})
+        const name = req.body.name
+        const link = req.body.link
+        const points = req.body.points
+        if(name)challenge.name = name
+        
+        if(link)challenge.link = link
+        if(points)challenge.points = points
+        challenge.save(function(err, challenge){
+            if(err)
+                return next(err)
+            res.status(200).json(challenge)
+        })
+
     })
 }
 
