@@ -11,7 +11,15 @@ const AuthenticationController = require('./controllers/authentication'),
 
 // Middleware to require login/auth
 const requireAuth = passport.authenticate('jwt', { session: false })
-const requireLogin = passport.authenticate('local', { session: false })
+const requireLogin = function(req, res, next) {
+	passport.authenticate('local', { session: false }, function(err, user, info) {
+    	if(err) { return next(err) }
+    	if(!user) { return res.status(401).json({error: info.error}) }
+    	else { req.user = user
+    		next()
+	    }
+	})(req, res, next)
+}
 
 module.exports = function(app) {
   // Initializing route groups
