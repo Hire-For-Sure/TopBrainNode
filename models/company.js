@@ -1,4 +1,5 @@
 const mongoose = require('mongoose'),
+      validator = require('./../utils/validators'),
       Schema = mongoose.Schema
     
 const CompanySchema = new Schema({
