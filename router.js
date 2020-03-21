@@ -4,6 +4,7 @@ const AuthenticationController = require('./controllers/authentication'),
       ChallengeController = require('./controllers/challenge'),
       CompanyController = require('./controllers/company'),
       CourseController = require('./controllers/course'),
+      ModuleController = require('./controllers/module'),
       express = require('express'),
       passportService = require('./config/passport'),
       passport = require('passport')
@@ -29,7 +30,8 @@ module.exports = function(app) {
         blogRoutes = express.Router(),
         challengeRoutes = express.Router(),
         companyRoutes = express.Router(),
-        courseRoutes = express.Router()
+        courseRoutes = express.Router(),
+        moduleRoutes = express.Router()
   
   // Set url for API group routes
   app.use('/api', apiRoutes)
@@ -126,5 +128,22 @@ module.exports = function(app) {
 
   // Update course route
   courseRoutes.patch('/', CourseController.editCourse)
+
+  //=================================================== Module Routes ===================================================//
+
+  // Set module routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/module', moduleRoutes)
+
+  // Get all modules route
+  moduleRoutes.get('/', ModuleController.getModules)
+
+  // Create modules route
+  moduleRoutes.post('/', ModuleController.addModule)
+
+  // Delete modules route
+  moduleRoutes.delete('/', ModuleController.deleteModule)
+
+  // Update modules route
+  moduleRoutes.patch('/', ModuleController.editModule)
   
 }
