@@ -76,7 +76,7 @@ module.exports = function(app) {
   userRoutes.get('/', requireAuth, ProfileController.getProfile)
 
   // Add More Interests route
-  userRoutes.post('/interests', requireAuth, ProfileController.addInterests)
+  userRoutes.put('/interests', requireAuth, ProfileController.addInterests)
 
   //=================================================== Challenge Routes ===================================================//
 
