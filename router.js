@@ -55,6 +55,17 @@ module.exports = function(app) {
 
   // Login route
   authRoutes.post('/login', requireLogin, AuthenticationController.login)
+	
+  //============================================== Profile Routes ==============================================//
+
+  // Set user routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/user', requireAuth, userRoutes)
+
+  // Get Profile route
+  userRoutes.get('/', ProfileController.getProfile)
+
+  // Add More Interests route
+  userRoutes.put('/interests', ProfileController.addInterests)
 
   //===================================================== Blog Routes ==================================================//
 
@@ -65,24 +76,13 @@ module.exports = function(app) {
   blogRoutes.get('/', BlogController.getBlogs)
 
   // Create blog route
-  // blogRoutes.post('/', BlogController.addBlog)
+  blogRoutes.post('/', BlogController.addBlog)
 
   // Delete blog route
-  // blogRoutes.delete('/', BlogController.deleteBlog)
+  blogRoutes.delete('/', BlogController.deleteBlog)
 
   // Update blog route
-  // blogRoutes.patch('/', BlogController.editBlog)
-
-//============================================== Profile Routes ==============================================//
-
-  // Set user routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/user', userRoutes)
-
-  // Get Profile route
-  userRoutes.get('/', requireAuth, ProfileController.getProfile)
-
-  // Add More Interests route
-  userRoutes.put('/interests', requireAuth, ProfileController.addInterests)
+  blogRoutes.patch('/', BlogController.editBlog)
 
   //============================================== Challenge Routes ==============================================//
 
@@ -93,13 +93,13 @@ module.exports = function(app) {
   challengeRoutes.get('/', ChallengeController.getChallenges)
 
   // Create challenge route
-  // challengeRoutes.post('/', ChallengeController.addChallenge)
+  challengeRoutes.post('/', ChallengeController.addChallenge)
 
   // Delete challenge route
-  // challengeRoutes.delete('/', ChallengeController.deleteChallenge)
+  challengeRoutes.delete('/', ChallengeController.deleteChallenge)
 
   // Update challenge route
-  // challengeRoutes.patch('/', ChallengeController.editChallenge)
+  challengeRoutes.patch('/', ChallengeController.editChallenge)
 
   //=============================================== Company Routes ==============================================//
 
@@ -110,13 +110,13 @@ module.exports = function(app) {
   companyRoutes.get('/', CompanyController.getCompanies)
 
   // Create company route
-  // companyRoutes.post('/', CompanyController.addCompany)
+  companyRoutes.post('/', CompanyController.addCompany)
 
   // Delete company route
-  // companyRoutes.delete('/', CompanyController.deleteCompany)
+  companyRoutes.delete('/', CompanyController.deleteCompany)
 
   // Update company route
-  // companyRoutes.patch('/', CompanyController.editCompany)
+  companyRoutes.patch('/', CompanyController.editCompany)
   
   //============================================== Course Routes ================================================//
 
@@ -127,13 +127,13 @@ module.exports = function(app) {
   courseRoutes.get('/', CourseController.getCourses)
 
   // Create course route
-  // courseRoutes.post('/', CourseController.addCourse)
+  courseRoutes.post('/', CourseController.addCourse)
 
   // Delete course route
-  // courseRoutes.delete('/', CourseController.deleteCourse)
+  courseRoutes.delete('/', CourseController.deleteCourse)
 
   // Update course route
-  // courseRoutes.patch('/', CourseController.editCourse)
+  courseRoutes.patch('/', CourseController.editCourse)
 
   //================================================ Module Routes ================================================//
 
@@ -144,13 +144,13 @@ module.exports = function(app) {
   moduleRoutes.get('/', ModuleController.getModules)
 
   // Create modules route
-  // moduleRoutes.post('/', ModuleController.addModule)
+  moduleRoutes.post('/', ModuleController.addModule)
 
   // Delete modules route
-  // moduleRoutes.delete('/', ModuleController.deleteModule)
+  moduleRoutes.delete('/', ModuleController.deleteModule)
 
   // Update modules route
-  // moduleRoutes.patch('/', ModuleController.editModule)
+  moduleRoutes.patch('/', ModuleController.editModule)
 
   //============================================== Career Track Routes =============================================//
 
@@ -161,18 +161,18 @@ module.exports = function(app) {
   careerTrackRoutes.get('/', CareerTrackController.getCareerTracks)
 
   // Create career track route
-  // careerTrackRoutes.post('/', CareerTrackController.addCareerTrack)
+  careerTrackRoutes.post('/', CareerTrackController.addCareerTrack)
 
   // Delete career track route
-  // careerTrackRoutes.delete('/', CareerTrackController.deleteCareerTrack)
+  careerTrackRoutes.delete('/', CareerTrackController.deleteCareerTrack)
 
   // Update career track route
-  // careerTrackRoutes.patch('/', CareerTrackController.editCareerTrack)
+  careerTrackRoutes.patch('/', CareerTrackController.editCareerTrack)
 
   //============================================== Active Career Path Routes =============================================//
 
   // Set module routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/active-career-paths', requireAuth, activeCareerPathRoutes)
+  apiRoutes.use('/active-career-paths', activeCareerPathRoutes)
 
   // Get all active career paths route
   activeCareerPathRoutes.get('/', ActiveCareerPathCotroller.getCareerPaths)
@@ -186,7 +186,7 @@ module.exports = function(app) {
   //============================================== Completed Modules Routes =============================================//
 
   // Set completed module routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/completed-modules', requireAuth, completedModuleRoutes)
+  apiRoutes.use('/completed-modules', completedModuleRoutes)
 
   // Get all completed modules route
   completedModuleRoutes.get('/', CompletedModuleController.getCompletedModules)
