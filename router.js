@@ -5,6 +5,9 @@ const AuthenticationController = require('./controllers/authentication'),
       CompanyController = require('./controllers/company'),
       CourseController = require('./controllers/course'),
       ModuleController = require('./controllers/module'),
+      CareerTrackController = require('./controllers/career_track'),
+      ActiveCareerPathCotroller = require('./controllers/active_career_paths'),
+      CompletedModuleController = require('./controllers/completed_modules'),
       express = require('express'),
       passportService = require('./config/passport'),
       passport = require('passport')
@@ -31,7 +34,10 @@ module.exports = function(app) {
         challengeRoutes = express.Router(),
         companyRoutes = express.Router(),
         courseRoutes = express.Router(),
-        moduleRoutes = express.Router()
+        moduleRoutes = express.Router(),
+        careerTrackRoutes = express.Router(),
+        activeCareerPathRoutes = express.Router(),
+        completedModuleRoutes = express.Router()
   
   // Set url for API group routes
   app.use('/api', apiRoutes)
@@ -59,15 +65,15 @@ module.exports = function(app) {
   blogRoutes.get('/', BlogController.getBlogs)
 
   // Create blog route
-  blogRoutes.post('/', BlogController.addBlog)
+  // blogRoutes.post('/', BlogController.addBlog)
 
   // Delete blog route
-  blogRoutes.delete('/', BlogController.deleteBlog)
+  // blogRoutes.delete('/', BlogController.deleteBlog)
 
   // Update blog route
-  blogRoutes.patch('/', BlogController.editBlog)
+  // blogRoutes.patch('/', BlogController.editBlog)
 
-//=================================================== Profile Routes ===================================================//
+//============================================== Profile Routes ==============================================//
 
   // Set user routes as subgroup/middleware to apiRoutes
   apiRoutes.use('/user', userRoutes)
@@ -78,7 +84,7 @@ module.exports = function(app) {
   // Add More Interests route
   userRoutes.put('/interests', requireAuth, ProfileController.addInterests)
 
-  //=================================================== Challenge Routes ===================================================//
+  //============================================== Challenge Routes ==============================================//
 
   // Set challenge routes as subgroup/middleware to apiRoutes
   apiRoutes.use('/challenge', challengeRoutes)
@@ -87,15 +93,15 @@ module.exports = function(app) {
   challengeRoutes.get('/', ChallengeController.getChallenges)
 
   // Create challenge route
-  challengeRoutes.post('/', ChallengeController.addChallenge)
+  // challengeRoutes.post('/', ChallengeController.addChallenge)
 
   // Delete challenge route
-  challengeRoutes.delete('/', ChallengeController.deleteChallenge)
+  // challengeRoutes.delete('/', ChallengeController.deleteChallenge)
 
   // Update challenge route
-  challengeRoutes.patch('/', ChallengeController.editChallenge)
+  // challengeRoutes.patch('/', ChallengeController.editChallenge)
 
-  //=================================================== Company Routes ===================================================//
+  //=============================================== Company Routes ==============================================//
 
   // Set company routes as subgroup/middleware to apiRoutes
   apiRoutes.use('/company', companyRoutes)
@@ -104,15 +110,15 @@ module.exports = function(app) {
   companyRoutes.get('/', CompanyController.getCompanies)
 
   // Create company route
-  companyRoutes.post('/', CompanyController.addCompany)
+  // companyRoutes.post('/', CompanyController.addCompany)
 
   // Delete company route
-  companyRoutes.delete('/', CompanyController.deleteCompany)
+  // companyRoutes.delete('/', CompanyController.deleteCompany)
 
   // Update company route
-  companyRoutes.patch('/', CompanyController.editCompany)
+  // companyRoutes.patch('/', CompanyController.editCompany)
   
-  //=================================================== Course Routes ===================================================//
+  //============================================== Course Routes ================================================//
 
   // Set course routes as subgroup/middleware to apiRoutes
   apiRoutes.use('/course', courseRoutes)
@@ -121,15 +127,15 @@ module.exports = function(app) {
   courseRoutes.get('/', CourseController.getCourses)
 
   // Create course route
-  courseRoutes.post('/', CourseController.addCourse)
+  // courseRoutes.post('/', CourseController.addCourse)
 
   // Delete course route
-  courseRoutes.delete('/', CourseController.deleteCourse)
+  // courseRoutes.delete('/', CourseController.deleteCourse)
 
   // Update course route
-  courseRoutes.patch('/', CourseController.editCourse)
+  // courseRoutes.patch('/', CourseController.editCourse)
 
-  //=================================================== Module Routes ===================================================//
+  //================================================ Module Routes ================================================//
 
   // Set module routes as subgroup/middleware to apiRoutes
   apiRoutes.use('/module', moduleRoutes)
@@ -138,12 +144,53 @@ module.exports = function(app) {
   moduleRoutes.get('/', ModuleController.getModules)
 
   // Create modules route
-  moduleRoutes.post('/', ModuleController.addModule)
+  // moduleRoutes.post('/', ModuleController.addModule)
 
   // Delete modules route
-  moduleRoutes.delete('/', ModuleController.deleteModule)
+  // moduleRoutes.delete('/', ModuleController.deleteModule)
 
   // Update modules route
-  moduleRoutes.patch('/', ModuleController.editModule)
-  
+  // moduleRoutes.patch('/', ModuleController.editModule)
+
+  //============================================== Career Track Routes =============================================//
+
+  // Set career-track routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/career-track', careerTrackRoutes)
+
+  // Get all career tracks route
+  careerTrackRoutes.get('/', CareerTrackController.getCareerTracks)
+
+  // Create career track route
+  // careerTrackRoutes.post('/', CareerTrackController.addCareerTrack)
+
+  // Delete career track route
+  // careerTrackRoutes.delete('/', CareerTrackController.deleteCareerTrack)
+
+  // Update career track route
+  // careerTrackRoutes.patch('/', CareerTrackController.editCareerTrack)
+
+  //============================================== Active Career Path Routes =============================================//
+
+  // Set module routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/active-career-paths', requireAuth, activeCareerPathRoutes)
+
+  // Get all active career paths route
+  activeCareerPathRoutes.get('/', ActiveCareerPathCotroller.getCareerPaths)
+
+  // Add career track to user route
+  activeCareerPathRoutes.post('/', ActiveCareerPathCotroller.addCareerPath)
+
+  // Delete career track from user route
+  activeCareerPathRoutes.delete('/', ActiveCareerPathCotroller.deleteCareerPath)
+
+  //============================================== Completed Modules Routes =============================================//
+
+  // Set completed module routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/completed-modules', requireAuth, completedModuleRoutes)
+
+  // Get all completed modules route
+  completedModuleRoutes.get('/', CompletedModuleController.getCompletedModules)
+
+  // Add completed modules to user route
+  completedModuleRoutes.post('/', CompletedModuleController.addCompletedModule)
 }
