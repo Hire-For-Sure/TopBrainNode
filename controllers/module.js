@@ -69,8 +69,8 @@ exports.editModule = function(req, res, next){
         if(!module)
             return res.status(422).send({error: "No module exists with the provided _id!"})
         const name = req.body.name
-        const description = req.body.link
-        const image = req.body.objectives
+        const description = req.body.description
+        const image = req.body.image
         const couress = req.body.courses
         const challenges = req.body.challenges
         const blogs = req.body.blogs
