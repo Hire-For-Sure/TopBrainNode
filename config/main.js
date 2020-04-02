@@ -4,7 +4,7 @@ module.exports = {
   // Database connection information
   'database': 'mongodb://localhost:27017/sqill',
   // Setting port for server
-  'port': 8888
+  'port': 8888,
   // AWS S3 information
   'AWS_ACCESS_KEY_ID': '',
   'AWS_SECRET_ACCESS_KEY': '',
