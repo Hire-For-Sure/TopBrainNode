@@ -28,4 +28,4 @@ const ModuleSchema = new Schema({
     ]
 })
 
-module.exports = mongoose.model('Moduele', ModuleSchema)
+module.exports = mongoose.model('Module', ModuleSchema)
