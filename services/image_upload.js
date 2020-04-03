@@ -23,9 +23,8 @@ const upload = multer({
   fileFilter,
   limits: { fileSize: 10 * 1024 * 1024 },
   storage: multerS3({
-    acl: 'public-read',
     s3: s3,
-    bucket: '',
+    bucket: 'hfs-files',
     metadata: function (req, file, cb) {
       cb(null, {fieldName: file.fieldname});
     },
