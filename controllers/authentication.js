@@ -54,34 +54,34 @@ exports.verify = function(req, res, next) {
       if (existingUser) {
         return res.status(422).send({ error: 'That username is not available.' })
       }
-    })
-  }
-  
-  if(email) {
-    User.findOne({ email: email }, function(err, existingUser) {
-      if (err) { return next(err) }
-
-      // If user is not unique, return error
-      if (existingUser) {
-        return res.status(422).send({ error: 'That email address is already in use.' })
-      }
-    })
-  }
-  
-  if(mobile_number) {
-    User.findOne({ mobile_number: mobile_number }, function(err, existingUser) {
-      if (err) { return next(err) }
-
-      // If user is not unique, return error
-      if (existingUser) {
-        return res.status(422).send({ error: 'That mobile number is already in use.' })
-      }
-    })
-  }
       
-  return res.status(200).json({
-    message: 'Success'
-  })
+      if(email) {
+        User.findOne({ email: email }, function(err, existingUser) {
+          if (err) { return next(err) }
+
+          // If user is not unique, return error
+          if (existingUser) {
+            return res.status(422).send({ error: 'That email address is already in use.' })
+          }
+          
+          if(mobile_number) {
+            User.findOne({ mobile_number: mobile_number }, function(err, existingUser) {
+              if (err) { return next(err) }
+
+              // If user is not unique, return error
+              if (existingUser) {
+                return res.status(422).send({ error: 'That mobile number is already in use.' })
+              }
+      
+              return res.status(200).json({
+                message: 'Success'
+              })
+            })
+          }
+        })
+      }
+    })
+  }
 }
 
 // Registration Route
