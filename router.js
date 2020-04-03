@@ -1,5 +1,6 @@
 const AuthenticationController = require('./controllers/authentication'),
       ProfileController = require('./controllers/profile'),
+      upload = require('./services/image_upload'),
       BlogController = require('./controllers/blog'),
       ChallengeController = require('./controllers/challenge'),
       CompanyController = require('./controllers/company'),
@@ -26,6 +27,8 @@ const requireLogin = function(req, res, next) {
 	})(req, res, next)
 }
 
+const singleUpload = upload.single('image')
+
 module.exports = function(app) {
   // Initializing route groups
   const apiRoutes = express.Router(),
@@ -51,11 +54,11 @@ module.exports = function(app) {
   // Set auth routes as subgroup/middleware to apiRoutes
   apiRoutes.use('/auth', authRoutes)
 
-  // Registration route
-  authRoutes.post('/register', AuthenticationController.register)
+  // Verification route
+  authRoutes.post('/verify', AuthenticationController.verify)
 
   // Registeration Details route
-  authRoutes.put('/register', requireAuth, AuthenticationController.update)
+  authRoutes.post('/register', AuthenticationController.register)
 
   // Login route
   authRoutes.post('/login', requireLogin, AuthenticationController.login)
@@ -70,6 +73,19 @@ module.exports = function(app) {
 
   // Add More Interests route
   userRoutes.put('/interests', ProfileController.addInterests)
+  
+  //============================================== Image Upload Route ==============================================//
+
+  // Set image upload route as subgroup/middleware to apiRoutes
+  apiRoutes.post('/image-upload', function(req, res) {
+    singleUpload(req, res, function(err) {
+      if (err) {
+        return res.status(422).send({errors: [{title: 'Image Upload Error', detail: err.message}]})
+      }
+
+      return res.json({'imageUrl': req.file.location})
+    })
+  })
 
   //===================================================== Blog Routes ==================================================//
 

@@ -16,7 +16,9 @@ const UserSchema = new Schema({
     required: true
   },
   mobile_number: {
-    type: Number
+    type: Number,
+    unique: true,
+    required: true
   },
   password: {
     type: String,
@@ -24,14 +26,14 @@ const UserSchema = new Schema({
   },
   profile: {
     name: { type: String, required: true },
-    university: { type: String },
-    branch: { type: String },
-    year_graduation: { type: Number },
-    country: { type: String },
-    state: { type: String },
-    city: { type: String }
+    university: { type: String, required: true, required: true },
+    branch: { type: String, required: true },
+    year_graduation: { type: Number, required: true },
+    country: { type: String, required: true },
+    state: { type: String, required: true },
+    city: { type: String, required: true }
   },
-  bio: { type: String },
+  bio: { type: String, required: true },
   interests: [{ type: String }],
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date }
