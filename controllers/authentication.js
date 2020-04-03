@@ -54,10 +54,6 @@ exports.verify = function(req, res, next) {
       if (existingUser) {
         return res.status(422).send({ error: 'That username is not available.' })
       }
-      
-      return res.status(200).json({
-        message: 'Success'
-      })
     })
   }
   
@@ -69,10 +65,6 @@ exports.verify = function(req, res, next) {
       if (existingUser) {
         return res.status(422).send({ error: 'That email address is already in use.' })
       }
-      
-      return res.status(200).json({
-        message: 'Success'
-      })
     })
   }
   
@@ -84,12 +76,12 @@ exports.verify = function(req, res, next) {
       if (existingUser) {
         return res.status(422).send({ error: 'That mobile number is already in use.' })
       }
-      
-      return res.status(200).json({
-        message: 'Success'
-      })
     })
   }
+      
+  return res.status(200).json({
+    message: 'Success'
+  })
 }
 
 // Registration Route
