@@ -56,9 +56,9 @@ exports.verify = function(req, res, next) {
     if(err) {
       return next(err);
     } else if(users) {
-        if (_.find(users, {email: email})){
+        if (_.find(users, {username: username})){
             return res.status(422).send({ error: 'That username is already taken.' })
-        } else if (_.find(users, {username: username})){
+        } else if (_.find(users, {email: email})){
             return res.status(422).send({ error: 'That email address is already registered.' })
         } else if (_.find(users, {mobile_number: mobile_number})){
             return res.status(422).send({ error: 'That mobile number is already in use.' })
