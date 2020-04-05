@@ -7,7 +7,8 @@ const express = require('express'),
       logger = require('morgan'),
       mongoose = require('mongoose'),
       config = require('./config/main'),
-      router = require('./router')
+      router = require('./router'),
+      cors = require('cors')
 
 
 // Database Connection
@@ -20,6 +21,8 @@ https.createServer({
 }, app).listen(config.port)
 console.log('Your server is running on port ' + config.port + '.')
 
+// Enable CORS for api calls
+app.use(cors())
 
 // Setting up basic middleware for all Express requests
 app.use(logger('dev')) // Log requests to API using morgan
