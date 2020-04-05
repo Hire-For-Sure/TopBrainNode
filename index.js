@@ -22,7 +22,7 @@ https.createServer({
 console.log('Your server is running on port ' + config.port + '.')
 
 // Enable CORS for api calls
-app.use(cors())
+//app.use(cors())
 
 // Enable CORS from client-side
 app.use(function(req, res, next) {
