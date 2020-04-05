@@ -1,5 +1,7 @@
 // Importing Node modules and initializing Express
 const express = require('express'),
+      fs = require('fs'),
+      https = require('https'),
       app = express(),
       bodyParser = require('body-parser'),
       logger = require('morgan'),
@@ -9,10 +11,13 @@ const express = require('express'),
 
 
 // Database Connection
-mongoose.connect(config.database);
+mongoose.connect(config.database)
 
 // Start the server
-const server = app.listen(config.port)
+https.createServer({
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+}, app).listen(config.port)
 console.log('Your server is running on port ' + config.port + '.')
 
 

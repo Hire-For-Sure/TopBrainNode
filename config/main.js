@@ -12,5 +12,7 @@ module.exports = {
   // AWS S3 information
   'AWS_ACCESS_KEY_ID': process.env.AWS_ACCESS_KEY_ID,
   'AWS_SECRET_ACCESS_KEY': process.env.AWS_SECRET_ACCESS_KEY,
-  'AWS_REGION': process.env.AWS_REGION
+  'AWS_REGION': process.env.AWS_REGION,
+  // Hosting url
+  'HOST_URI': process.env.HOST_URI
 }

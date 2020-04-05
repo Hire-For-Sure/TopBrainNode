@@ -80,7 +80,7 @@ module.exports = function(app) {
   apiRoutes.post('/image-upload', function(req, res) {
     singleUpload(req, res, function(err) {
       if (err) {
-        return res.status(422).send({errors: [{title: 'Image Upload Error', detail: err.message}]})
+        return res.status(422).send({errors: [{title: 'Image Upload Error', detail: err}]})
       }
 
       return res.json({'imageUrl': req.file.location})
@@ -94,15 +94,18 @@ module.exports = function(app) {
 
   // Get all blogs route
   blogRoutes.get('/', BlogController.getBlogs)
+  
+  // Get blog route
+  //blogRoutes.get('/:_id', BlogController.getBlog)
 
   // Create blog route
   blogRoutes.post('/', BlogController.addBlog)
 
   // Delete blog route
-  blogRoutes.delete('/', BlogController.deleteBlog)
+  blogRoutes.delete('/:_id', BlogController.deleteBlog)
 
   // Update blog route
-  blogRoutes.patch('/', BlogController.editBlog)
+  blogRoutes.patch('/:_id', BlogController.editBlog)
 
   //============================================== Challenge Routes ==============================================//
 
@@ -111,15 +114,18 @@ module.exports = function(app) {
 
   // Get all challenge route
   challengeRoutes.get('/', ChallengeController.getChallenges)
+  
+  // Get challenge route
+  //challengeRoutes.get('/:_id', ChallengeController.getChallenge)
 
   // Create challenge route
   challengeRoutes.post('/', ChallengeController.addChallenge)
 
   // Delete challenge route
-  challengeRoutes.delete('/', ChallengeController.deleteChallenge)
+  challengeRoutes.delete('/:_id', ChallengeController.deleteChallenge)
 
   // Update challenge route
-  challengeRoutes.patch('/', ChallengeController.editChallenge)
+  challengeRoutes.patch('/:_id', ChallengeController.editChallenge)
 
   //=============================================== Company Routes ==============================================//
 
@@ -129,14 +135,17 @@ module.exports = function(app) {
   // Get all company route
   companyRoutes.get('/', CompanyController.getCompanies)
 
+  // Get company route
+  //companyRoutes.get('/:_id', CompanyController.getCompany)
+
   // Create company route
   companyRoutes.post('/', CompanyController.addCompany)
 
   // Delete company route
-  companyRoutes.delete('/', CompanyController.deleteCompany)
+  companyRoutes.delete('/:_id', CompanyController.deleteCompany)
 
   // Update company route
-  companyRoutes.patch('/', CompanyController.editCompany)
+  companyRoutes.patch('/:_id', CompanyController.editCompany)
   
   //============================================== Course Routes ================================================//
 
@@ -145,15 +154,18 @@ module.exports = function(app) {
 
   // Get all course route
   courseRoutes.get('/', CourseController.getCourses)
+  
+  // Get course route
+  //courseRoutes.get('/:_id', CourseController.getCourse)
 
   // Create course route
   courseRoutes.post('/', CourseController.addCourse)
 
   // Delete course route
-  courseRoutes.delete('/', CourseController.deleteCourse)
+  courseRoutes.delete('/:_id', CourseController.deleteCourse)
 
   // Update course route
-  courseRoutes.patch('/', CourseController.editCourse)
+  courseRoutes.patch('/:_id', CourseController.editCourse)
 
   //================================================ Module Routes ================================================//
 
@@ -162,15 +174,18 @@ module.exports = function(app) {
 
   // Get all modules route
   moduleRoutes.get('/', ModuleController.getModules)
+  
+  // Get module route
+  moduleRoutes.get('/:_id', ModuleController.getModule)
 
   // Create modules route
   moduleRoutes.post('/', ModuleController.addModule)
 
   // Delete modules route
-  moduleRoutes.delete('/', ModuleController.deleteModule)
+  moduleRoutes.delete('/:_id', ModuleController.deleteModule)
 
   // Update modules route
-  moduleRoutes.patch('/', ModuleController.editModule)
+  moduleRoutes.patch('/:_id', ModuleController.editModule)
 
   //============================================== Career Track Routes =============================================//
 
@@ -179,15 +194,18 @@ module.exports = function(app) {
 
   // Get all career tracks route
   careerTrackRoutes.get('/', CareerTrackController.getCareerTracks)
+  
+  // Get career track route
+  //careerTrackRoutes.get('/:_id', CareerTrackController.getCareerTrack)
 
   // Create career track route
   careerTrackRoutes.post('/', CareerTrackController.addCareerTrack)
 
   // Delete career track route
-  careerTrackRoutes.delete('/', CareerTrackController.deleteCareerTrack)
+  careerTrackRoutes.delete('/:_id', CareerTrackController.deleteCareerTrack)
 
   // Update career track route
-  careerTrackRoutes.patch('/', CareerTrackController.editCareerTrack)
+  careerTrackRoutes.patch('/:_id', CareerTrackController.editCareerTrack)
 
   //============================================== Active Career Path Routes =============================================//
 

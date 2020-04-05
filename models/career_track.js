@@ -17,6 +17,13 @@ const CareerTrackSchema = new Schema({
         },
         required: true
     },
+    thumbnailurl: {
+        type: String,
+        validate: {
+            validator: validator.urlValidator,
+            message: props => `${props.value} is not a valid URL!`
+        }
+    },    
     salary: {
         type: Number,
         required: true
@@ -37,6 +44,9 @@ const CareerTrackSchema = new Schema({
     ],
     companies: [
         {type: Schema.Types.ObjectId, ref: Company}
+    ],
+    tags: [
+        {type: String}
     ]
 })
 

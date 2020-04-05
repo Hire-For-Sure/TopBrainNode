@@ -1,12 +1,34 @@
 "use strict";
 
-const Module = require('./../models/module')
+const Module = require('./../models/module'),
+      kue = require('kue')
+      
+require('./../services/thumbnailworker')
+
+let queue = kue.createQueue({
+  prefix: 'q',
+  redis: {
+    host: 'localhost',
+    port: 6379 // default
+  }
+})
 
 exports.getModules = function(req, res, next){
     Module.find(function(err, modules){
         if(err)
             return next(err)
         return res.status(200).json(modules)
+    })
+}
+
+exports.getModule = function(req, res, next){
+    const _id = req.params._id
+    Module.findOne({_id: _id}, function(err, module){
+        if(err)
+            return next(err)
+        if(!module)
+            return res.status(422).send({error: "No module exists with the provided _id!"})
+        return res.status(200).json(module)
     })
 }
 
@@ -40,12 +62,31 @@ exports.addModule = function(req, res, next){
     module.save(function(err, module){
         if(err)
             return next(err)
+            
+        const thumbnailJob = queue.create('thumbnail', {
+              name: 'Module',
+              url: module.image,
+              _id: module._id
+        })
+        .removeOnComplete(true)
+        .attempts(5)
+        .backoff({delay: 60*1000, type:'exponential'})
+        .save()
+
+        thumbnailJob.on('failed', function(errorMessage){
+            console.log('Job failed')
+            let error = JSON.parse(errorMessage)
+            console.log(error)
+        })
+
+        console.log({success: 'Successfully assigned job to the worker'});
+        
         return res.status(201).json(module)
     })
 }
 
 exports.deleteModule = function(req, res, next){
-    const _id = req.body._id
+    const _id = req.params._id
     Module.findOneAndDelete({
         _id: _id
     }, function(err, module){
@@ -62,7 +103,7 @@ exports.deleteModule = function(req, res, next){
 }
 
 exports.editModule = function(req, res, next){
-    const _id = req.body._id
+    const _id = req.params._id
     Module.findOne({_id: _id}, function(err, module){
         if(err)
             return next(err)

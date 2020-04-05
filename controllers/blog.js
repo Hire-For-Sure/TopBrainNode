@@ -10,6 +10,17 @@ exports.getBlogs = function(req, res, next) {
     })
 }
 
+exports.getBlog = function(req, res, next) {
+    const _id = req.params._id
+    Blog.findOne({_id: _id}, function(err, blog){
+        if(err)
+            return next(err)
+        if(!blog)
+            return res.status(422).send({error: "No blog exists with the provided _id!"})
+        return res.status(200).json(blog)
+    })
+}
+
 exports.addBlog = function(req, res, next){
     const name = req.body.name
     const link = req.body.link
@@ -29,7 +40,7 @@ exports.addBlog = function(req, res, next){
 }
 
 exports.deleteBlog = function(req, res, next){
-    const _id = req.body._id
+    const _id = req.params._id
     Blog.findOneAndDelete({
         _id: _id
     }, function(err, blog){
@@ -41,12 +52,12 @@ exports.deleteBlog = function(req, res, next){
         }
         return res.status(200).json({
             status: "SUCCESS"
-        })   
+        })
     })
 }
 
 exports.editBlog = function(req, res, next){
-    const _id = req.body._id
+    const _id = req.params._id
     Blog.findOne({_id: _id}, function(err, blog){
         if(err)
             return next(err)

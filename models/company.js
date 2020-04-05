@@ -11,6 +11,13 @@ const CompanySchema = new Schema({
         },
         required: true
     },
+    thumbnailurl: {
+        type: String,
+        validate: {
+            validator: validator.urlValidator,
+            message: props => `${props.value} is not a valid URL!`
+        }
+    },
     name: {
         type: String,
         required: true

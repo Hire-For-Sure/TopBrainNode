@@ -1,4 +1,5 @@
 const mongoose = require('mongoose'),
+      validator = require('./../utils/validators'),
       Schema = mongoose.Schema
       Course = require('./course'),
       Blog = require('./blog'),
@@ -15,7 +16,18 @@ const ModuleSchema = new Schema({
     },
     image: {
         type: String,
+        validate: {
+            validator: validator.urlValidator,
+            message: props => `${props.value} is not a valid URL!`
+        },
         required: true
+    },
+    thumbnailurl: {
+        type: String,
+        validate: {
+            validator: validator.urlValidator,
+            message: props => `${props.value} is not a valid URL!`
+        }
     },
     courses: [
         {type: Schema.Types.ObjectId, ref: Course}

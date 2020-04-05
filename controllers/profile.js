@@ -6,13 +6,7 @@ const User = require('../models/user')
 function setUserInfo(request) {
   return {
     _id: request._id,
-    name: request.profile.name,
-    university: request.profile.university,
-    branch: request.profile.branch,
-    year_graduation: request.profile.year_graduation,
-    country: request.profile.country,
-    state: request.profile.state,
-    city: request.profile.city,
+    profile: request.profile,
     username: request.username,
     email: request.email,
     mobile_number: request.mobile_number,

@@ -2,6 +2,7 @@
 
 const jwt = require('jsonwebtoken'),
       crypto = require('crypto'),
+      _ = require('lodash'),
       User = require('../models/user'),
       config = require('../config/main')
 
@@ -46,42 +47,28 @@ exports.verify = function(req, res, next) {
   const email = req.body.email
   const mobile_number = req.body.mobile_number
   
-  if(username) {
-    User.findOne({ username: username }, function(err, existingUser) {
-      if (err) { return next(err) }
-
-      // If user is not unique, return error
-      if (existingUser) {
-        return res.status(422).send({ error: 'That username is not available.' })
-      }
-      
-      if(email) {
-        User.findOne({ email: email }, function(err, existingUser) {
-          if (err) { return next(err) }
-
-          // If user is not unique, return error
-          if (existingUser) {
-            return res.status(422).send({ error: 'That email address is already in use.' })
-          }
-          
-          if(mobile_number) {
-            User.findOne({ mobile_number: mobile_number }, function(err, existingUser) {
-              if (err) { return next(err) }
-
-              // If user is not unique, return error
-              if (existingUser) {
-                return res.status(422).send({ error: 'That mobile number is already in use.' })
-              }
-      
-              return res.status(200).json({
+  let options = []
+  if(username) options.push({ username: username })
+  if(email) options.push({ email: email })
+  if(mobile_number) options.push({ mobile_number: mobile_number })
+  
+  User.find({ $or: options }, function(err, users){
+    if(err) {
+      return next(err);
+    } else if(users) {
+        if (_.find(users, {email: email})){
+            return res.status(422).send({ error: 'That username is already taken.' })
+        } else if (_.find(users, {username: username})){
+            return res.status(422).send({ error: 'That email address is already registered.' })
+        } else if (_.find(users, {mobile_number: mobile_number})){
+            return res.status(422).send({ error: 'That mobile number is already in use.' })
+        } else {
+            return res.status(200).json({
                 message: 'Success'
-              })
             })
-          }
-        })
-      }
-    })
-  }
+        }
+    }
+  })
 }
 
 // Registration Route
