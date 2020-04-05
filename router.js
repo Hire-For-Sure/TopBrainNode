@@ -11,8 +11,7 @@ const AuthenticationController = require('./controllers/authentication'),
       CompletedModuleController = require('./controllers/completed_modules'),
       express = require('express'),
       passportService = require('./config/passport'),
-      passport = require('passport'),
-      cors = require('cors')
+      passport = require('passport')
       
 
 // Middleware to require login/auth
@@ -42,9 +41,6 @@ module.exports = function(app) {
         careerTrackRoutes = express.Router(),
         activeCareerPathRoutes = express.Router(),
         completedModuleRoutes = express.Router()
-  
-  // Enable CORS for api calls
-  app.use(cors())
 
   // Set url for API group routes
   app.use('/api', apiRoutes)
