@@ -101,13 +101,13 @@ exports.editModule = function(req, res, next){
         const name = req.body.name
         const description = req.body.description
         const image = req.body.image
-        const couress = req.body.courses
+        const courses = req.body.courses
         const challenges = req.body.challenges
         const blogs = req.body.blogs
         if(name)module.name = name
         if(description)module.description = description
         if(image)module.image = image
-        if(couress)module.couress = couress
+        if(courses)module.courses = courses
         if(challenges)module.challenges = challenges
         if(blogs)module.blogs = blogs
         module.save(function(err, module){
