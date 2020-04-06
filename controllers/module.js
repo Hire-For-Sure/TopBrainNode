@@ -14,21 +14,10 @@ let queue = kue.createQueue({
 })
 
 exports.getModules = function(req, res, next){
-    Module.find(function(err, modules){
+    Module.find({...req.query}, function(err, modules){
         if(err)
             return next(err)
         return res.status(200).json(modules)
-    })
-}
-
-exports.getModule = function(req, res, next){
-    const _id = req.params._id
-    Module.findOne({_id: _id}, function(err, module){
-        if(err)
-            return next(err)
-        if(!module)
-            return res.status(422).send({error: "No module exists with the provided _id!"})
-        return res.status(200).json(module)
     })
 }
 
@@ -86,7 +75,7 @@ exports.addModule = function(req, res, next){
 }
 
 exports.deleteModule = function(req, res, next){
-    const _id = req.params._id
+    const _id = req.body._id
     Module.findOneAndDelete({
         _id: _id
     }, function(err, module){
@@ -103,7 +92,7 @@ exports.deleteModule = function(req, res, next){
 }
 
 exports.editModule = function(req, res, next){
-    const _id = req.params._id
+    const _id = req.body._id
     Module.findOne({_id: _id}, function(err, module){
         if(err)
             return next(err)

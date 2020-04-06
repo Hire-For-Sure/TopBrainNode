@@ -94,18 +94,15 @@ module.exports = function(app) {
 
   // Get all blogs route
   blogRoutes.get('/', BlogController.getBlogs)
-  
-  // Get blog route
-  //blogRoutes.get('/:_id', BlogController.getBlog)
 
   // Create blog route
   blogRoutes.post('/', BlogController.addBlog)
 
   // Delete blog route
-  blogRoutes.delete('/:_id', BlogController.deleteBlog)
+  blogRoutes.delete('/', BlogController.deleteBlog)
 
   // Update blog route
-  blogRoutes.patch('/:_id', BlogController.editBlog)
+  blogRoutes.patch('/', BlogController.editBlog)
 
   //============================================== Challenge Routes ==============================================//
 
@@ -114,18 +111,15 @@ module.exports = function(app) {
 
   // Get all challenge route
   challengeRoutes.get('/', ChallengeController.getChallenges)
-  
-  // Get challenge route
-  //challengeRoutes.get('/:_id', ChallengeController.getChallenge)
 
   // Create challenge route
   challengeRoutes.post('/', ChallengeController.addChallenge)
 
   // Delete challenge route
-  challengeRoutes.delete('/:_id', ChallengeController.deleteChallenge)
+  challengeRoutes.delete('/', ChallengeController.deleteChallenge)
 
   // Update challenge route
-  challengeRoutes.patch('/:_id', ChallengeController.editChallenge)
+  challengeRoutes.patch('/', ChallengeController.editChallenge)
 
   //=============================================== Company Routes ==============================================//
 
@@ -135,17 +129,14 @@ module.exports = function(app) {
   // Get all company route
   companyRoutes.get('/', CompanyController.getCompanies)
 
-  // Get company route
-  //companyRoutes.get('/:_id', CompanyController.getCompany)
-
   // Create company route
   companyRoutes.post('/', CompanyController.addCompany)
 
   // Delete company route
-  companyRoutes.delete('/:_id', CompanyController.deleteCompany)
+  companyRoutes.delete('/', CompanyController.deleteCompany)
 
   // Update company route
-  companyRoutes.patch('/:_id', CompanyController.editCompany)
+  companyRoutes.patch('/', CompanyController.editCompany)
   
   //============================================== Course Routes ================================================//
 
@@ -154,18 +145,15 @@ module.exports = function(app) {
 
   // Get all course route
   courseRoutes.get('/', CourseController.getCourses)
-  
-  // Get course route
-  //courseRoutes.get('/:_id', CourseController.getCourse)
 
   // Create course route
   courseRoutes.post('/', CourseController.addCourse)
 
   // Delete course route
-  courseRoutes.delete('/:_id', CourseController.deleteCourse)
+  courseRoutes.delete('/', CourseController.deleteCourse)
 
   // Update course route
-  courseRoutes.patch('/:_id', CourseController.editCourse)
+  courseRoutes.patch('/', CourseController.editCourse)
 
   //================================================ Module Routes ================================================//
 
@@ -174,18 +162,15 @@ module.exports = function(app) {
 
   // Get all modules route
   moduleRoutes.get('/', ModuleController.getModules)
-  
-  // Get module route
-  moduleRoutes.get('/:_id', ModuleController.getModule)
 
   // Create modules route
   moduleRoutes.post('/', ModuleController.addModule)
 
   // Delete modules route
-  moduleRoutes.delete('/:_id', ModuleController.deleteModule)
+  moduleRoutes.delete('/', ModuleController.deleteModule)
 
   // Update modules route
-  moduleRoutes.patch('/:_id', ModuleController.editModule)
+  moduleRoutes.patch('/', ModuleController.editModule)
 
   //============================================== Career Track Routes =============================================//
 
@@ -194,18 +179,15 @@ module.exports = function(app) {
 
   // Get all career tracks route
   careerTrackRoutes.get('/', CareerTrackController.getCareerTracks)
-  
-  // Get career track route
-  //careerTrackRoutes.get('/:_id', CareerTrackController.getCareerTrack)
 
   // Create career track route
   careerTrackRoutes.post('/', CareerTrackController.addCareerTrack)
 
   // Delete career track route
-  careerTrackRoutes.delete('/:_id', CareerTrackController.deleteCareerTrack)
+  careerTrackRoutes.delete('/', CareerTrackController.deleteCareerTrack)
 
   // Update career track route
-  careerTrackRoutes.patch('/:_id', CareerTrackController.editCareerTrack)
+  careerTrackRoutes.patch('/', CareerTrackController.editCareerTrack)
 
   //============================================== Active Career Path Routes =============================================//
 
