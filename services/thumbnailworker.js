@@ -54,12 +54,32 @@ const uploadThumbnail = (job, done) => {
         request(options, function (error, response) { 
             if (error) throw new Error(error)
             thumbnailUrl = response.body.imageUrl
-            console.log(thumbnailUrl)
+            if(modulename == 'Company') {
+                Company.findOneAndUpdate({ _id: _id }, { thumbnailurl: thumbnailUrl })
+            }
+            
+            if(modulename == 'Module') {
+                Company.findOneAndUpdate({ _id: _id }, { thumbnailurl: thumbnailUrl })
+            }
+            
+            if(modulename == 'CareerTrack') {
+                CareerTrack.findOneAndUpdate({ _id: _id }, { thumbnailurl: thumbnailUrl })
+            }
         })
+    })
+    .catch((err) => {
+      return done(new Error(JSON.stringify(err)))
     })
   })
   .then(() => {
-  console.log(thumbnailUrl)
     done()
+  })
+  .catch((err) => {
+    if(400<=err.status<=499){
+      job.attempts(0 , () => {
+        return done( new Error(JSON.stringify(err)))
+      })
+    }
+    return done( new Error(JSON.stringify(err)))
   })
 }
