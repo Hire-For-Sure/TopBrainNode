@@ -60,7 +60,7 @@ exports.verify = function(req, res, next) {
             return res.status(422).send({ error: 'That username is already taken.' })
         } else if (_.find(users, {email: email})){
             return res.status(422).send({ error: 'That email address is already registered.' })
-        } else if (_.find(users, {mobile_number: mobile_number})){
+        } else if (_.find(users, function(o) { return o.mobile_number == mobile_number })){
             return res.status(422).send({ error: 'That mobile number is already in use.' })
         } else {
             return res.status(200).json({
