@@ -14,21 +14,10 @@ let queue = kue.createQueue({
 })
 
 exports.getModules = function(req, res, next){
-    Module.find(function(err, modules){
+    Module.find({...req.query}, function(err, modules){
         if(err)
             return next(err)
         return res.status(200).json(modules)
-    })
-}
-
-exports.getModule = function(req, res, next){
-    const _id = req.params._id
-    Module.findOne({_id: _id}, function(err, module){
-        if(err)
-            return next(err)
-        if(!module)
-            return res.status(422).send({error: "No module exists with the provided _id!"})
-        return res.status(200).json(module)
     })
 }
 
@@ -36,9 +25,9 @@ exports.addModule = function(req, res, next){
     const name = req.body.name
     const description = req.body.description
     const image = req.body.image
-    const courses = req.body.courses
-    const blogs = req.body.blogs
-    const challenges = req.body.challenges
+    var courses = req.body.courses
+    var blogs = req.body.blogs
+    var challenges = req.body.challenges
     if(!name)
         return res.status(422).json({"error": "Name is required"})
     if(!description)
@@ -86,7 +75,7 @@ exports.addModule = function(req, res, next){
 }
 
 exports.deleteModule = function(req, res, next){
-    const _id = req.params._id
+    const _id = req.body._id
     Module.findOneAndDelete({
         _id: _id
     }, function(err, module){
@@ -103,7 +92,7 @@ exports.deleteModule = function(req, res, next){
 }
 
 exports.editModule = function(req, res, next){
-    const _id = req.params._id
+    const _id = req.body._id
     Module.findOne({_id: _id}, function(err, module){
         if(err)
             return next(err)
@@ -112,13 +101,13 @@ exports.editModule = function(req, res, next){
         const name = req.body.name
         const description = req.body.description
         const image = req.body.image
-        const couress = req.body.courses
+        const courses = req.body.courses
         const challenges = req.body.challenges
         const blogs = req.body.blogs
         if(name)module.name = name
         if(description)module.description = description
         if(image)module.image = image
-        if(couress)module.couress = couress
+        if(courses)module.courses = courses
         if(challenges)module.challenges = challenges
         if(blogs)module.blogs = blogs
         module.save(function(err, module){

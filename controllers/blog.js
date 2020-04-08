@@ -3,21 +3,10 @@
 const Blog = require('./../models/blog')
 
 exports.getBlogs = function(req, res, next) {
-    Blog.find(function(err, blogs){
+    Blog.find({...req.query}, function(err, blogs){
         if (err)
             return next(err)
         return res.status(200).json(blogs)
-    })
-}
-
-exports.getBlog = function(req, res, next) {
-    const _id = req.params._id
-    Blog.findOne({_id: _id}, function(err, blog){
-        if(err)
-            return next(err)
-        if(!blog)
-            return res.status(422).send({error: "No blog exists with the provided _id!"})
-        return res.status(200).json(blog)
     })
 }
 
@@ -40,7 +29,7 @@ exports.addBlog = function(req, res, next){
 }
 
 exports.deleteBlog = function(req, res, next){
-    const _id = req.params._id
+    const _id = req.body._id
     Blog.findOneAndDelete({
         _id: _id
     }, function(err, blog){
@@ -57,7 +46,7 @@ exports.deleteBlog = function(req, res, next){
 }
 
 exports.editBlog = function(req, res, next){
-    const _id = req.params._id
+    const _id = req.body._id
     Blog.findOne({_id: _id}, function(err, blog){
         if(err)
             return next(err)

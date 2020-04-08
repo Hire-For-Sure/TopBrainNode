@@ -14,21 +14,10 @@ let queue = kue.createQueue({
 })
 
 exports.getCareerTracks = function(req, res, next) {
-    CareerTrack.find(function(err, career_tracks){
+    CareerTrack.find({...req.query}, function(err, career_tracks){
         if (err)
             return next(err)
         return res.status(200).json(career_tracks)
-    })
-}
-
-exports.editCareerTrack = function(req, res, next){
-    const _id = req.params._id
-    CareerTrack.findOne({_id: _id}, function(err, career_track){
-        if(err)
-            return next(err)
-        if(!career_track)
-            return res.status(422).send({error: "No career_track exists with the provided _id!"})
-        return res.status(200).json(career_track)
     })
 }
 
@@ -92,7 +81,7 @@ exports.addCareerTrack = function(req, res, next){
 }
 
 exports.deleteCareerTrack = function(req, res, next){
-    const _id = req.params._id
+    const _id = req.body._id
     CareerTrack.findOneAndDelete({
         _id: _id
     }, function(err, career_track){
@@ -109,7 +98,7 @@ exports.deleteCareerTrack = function(req, res, next){
 }
 
 exports.editCareerTrack = function(req, res, next){
-    const _id = req.params._id
+    const _id = req.body._id
     CareerTrack.findOne({_id: _id}, function(err, career_track){
         if(err)
             return next(err)
