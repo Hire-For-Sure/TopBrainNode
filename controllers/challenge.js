@@ -3,21 +3,10 @@
 const Challenge = require('./../models/challenge')
 
 exports.getChallenges = function(req, res, next) {
-    Challenge.find(function(err, challenges){
+    Challenge.find({...req.query}, function(err, challenges){
         if (err)
             return next(err)
         return res.status(200).json(challenges)
-    })
-}
-
-exports.getChallenge = function(req, res, next){
-    const _id = req.params._id
-    Challenge.findOne({_id: _id}, function(err, challenge){
-        if(err)
-            return next(err)
-        if(!challenge)
-            return res.status(422).send({error: "No challenge exists with the provided _id!"})
-        return res.status(200).json(challenge)
     })
 }
 
@@ -44,7 +33,7 @@ exports.addChallenge = function(req, res, next){
 }
 
 exports.deleteChallenge = function(req, res, next){
-    const _id = req.params._id
+    const _id = req.body._id
     Challenge.findOneAndDelete({
         _id: _id
     }, function(err, challenge){
@@ -61,7 +50,7 @@ exports.deleteChallenge = function(req, res, next){
 }
 
 exports.editChallenge = function(req, res, next){
-    const _id = req.params._id
+    const _id = req.body._id
     Challenge.findOne({_id: _id}, function(err, challenge){
         if(err)
             return next(err)

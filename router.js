@@ -9,6 +9,8 @@ const AuthenticationController = require('./controllers/authentication'),
       CareerTrackController = require('./controllers/career_track'),
       ActiveCareerPathCotroller = require('./controllers/active_career_paths'),
       CompletedModuleController = require('./controllers/completed_modules'),
+      QuizController = require('./controllers/quiz'),
+      ScoreController = require('./controllers/score'),
       express = require('express'),
       passportService = require('./config/passport'),
       passport = require('passport'),
@@ -41,7 +43,9 @@ module.exports = function(app) {
         moduleRoutes = express.Router(),
         careerTrackRoutes = express.Router(),
         activeCareerPathRoutes = express.Router(),
-        completedModuleRoutes = express.Router()
+        completedModuleRoutes = express.Router(),
+        quizRoutes = express.Router(),
+        scoreRoutes = express.Router()
 
   // Enable CORS for api calls
   app.use(cors())
@@ -94,18 +98,15 @@ module.exports = function(app) {
 
   // Get all blogs route
   blogRoutes.get('/', BlogController.getBlogs)
-  
-  // Get blog route
-  //blogRoutes.get('/:_id', BlogController.getBlog)
 
   // Create blog route
   blogRoutes.post('/', BlogController.addBlog)
 
   // Delete blog route
-  blogRoutes.delete('/:_id', BlogController.deleteBlog)
+  blogRoutes.delete('/', BlogController.deleteBlog)
 
   // Update blog route
-  blogRoutes.patch('/:_id', BlogController.editBlog)
+  blogRoutes.patch('/', BlogController.editBlog)
 
   //============================================== Challenge Routes ==============================================//
 
@@ -114,18 +115,15 @@ module.exports = function(app) {
 
   // Get all challenge route
   challengeRoutes.get('/', ChallengeController.getChallenges)
-  
-  // Get challenge route
-  //challengeRoutes.get('/:_id', ChallengeController.getChallenge)
 
   // Create challenge route
   challengeRoutes.post('/', ChallengeController.addChallenge)
 
   // Delete challenge route
-  challengeRoutes.delete('/:_id', ChallengeController.deleteChallenge)
+  challengeRoutes.delete('/', ChallengeController.deleteChallenge)
 
   // Update challenge route
-  challengeRoutes.patch('/:_id', ChallengeController.editChallenge)
+  challengeRoutes.patch('/', ChallengeController.editChallenge)
 
   //=============================================== Company Routes ==============================================//
 
@@ -135,17 +133,14 @@ module.exports = function(app) {
   // Get all company route
   companyRoutes.get('/', CompanyController.getCompanies)
 
-  // Get company route
-  //companyRoutes.get('/:_id', CompanyController.getCompany)
-
   // Create company route
   companyRoutes.post('/', CompanyController.addCompany)
 
   // Delete company route
-  companyRoutes.delete('/:_id', CompanyController.deleteCompany)
+  companyRoutes.delete('/', CompanyController.deleteCompany)
 
   // Update company route
-  companyRoutes.patch('/:_id', CompanyController.editCompany)
+  companyRoutes.patch('/', CompanyController.editCompany)
   
   //============================================== Course Routes ================================================//
 
@@ -154,18 +149,15 @@ module.exports = function(app) {
 
   // Get all course route
   courseRoutes.get('/', CourseController.getCourses)
-  
-  // Get course route
-  //courseRoutes.get('/:_id', CourseController.getCourse)
 
   // Create course route
   courseRoutes.post('/', CourseController.addCourse)
 
   // Delete course route
-  courseRoutes.delete('/:_id', CourseController.deleteCourse)
+  courseRoutes.delete('/', CourseController.deleteCourse)
 
   // Update course route
-  courseRoutes.patch('/:_id', CourseController.editCourse)
+  courseRoutes.patch('/', CourseController.editCourse)
 
   //================================================ Module Routes ================================================//
 
@@ -174,18 +166,15 @@ module.exports = function(app) {
 
   // Get all modules route
   moduleRoutes.get('/', ModuleController.getModules)
-  
-  // Get module route
-  moduleRoutes.get('/:_id', ModuleController.getModule)
 
   // Create modules route
   moduleRoutes.post('/', ModuleController.addModule)
 
   // Delete modules route
-  moduleRoutes.delete('/:_id', ModuleController.deleteModule)
+  moduleRoutes.delete('/', ModuleController.deleteModule)
 
   // Update modules route
-  moduleRoutes.patch('/:_id', ModuleController.editModule)
+  moduleRoutes.patch('/', ModuleController.editModule)
 
   //============================================== Career Track Routes =============================================//
 
@@ -194,18 +183,15 @@ module.exports = function(app) {
 
   // Get all career tracks route
   careerTrackRoutes.get('/', CareerTrackController.getCareerTracks)
-  
-  // Get career track route
-  //careerTrackRoutes.get('/:_id', CareerTrackController.getCareerTrack)
 
   // Create career track route
   careerTrackRoutes.post('/', CareerTrackController.addCareerTrack)
 
   // Delete career track route
-  careerTrackRoutes.delete('/:_id', CareerTrackController.deleteCareerTrack)
+  careerTrackRoutes.delete('/', CareerTrackController.deleteCareerTrack)
 
   // Update career track route
-  careerTrackRoutes.patch('/:_id', CareerTrackController.editCareerTrack)
+  careerTrackRoutes.patch('/', CareerTrackController.editCareerTrack)
 
   //============================================== Active Career Path Routes =============================================//
 
@@ -231,4 +217,39 @@ module.exports = function(app) {
 
   // Add completed modules to user route
   completedModuleRoutes.post('/', CompletedModuleController.addCompletedModule)
+  
+  //============================================== Quiz Routes =============================================//
+  // Set quiz routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/quiz', quizRoutes)
+
+  // Get all quiz route
+  quizRoutes.get('/', QuizController.getQuizzes)
+
+  // Create quiz route
+  quizRoutes.post('/', QuizController.addQuiz)
+
+  // Delete quiz route
+  quizRoutes.delete('/', QuizController.deleteQuiz)
+
+  // Update quiz route
+  quizRoutes.patch('/', QuizController.editQuiz)
+  
+  // Add question route
+  quizRoutes.patch('/addQuestion', QuizController.addQuestion)
+  
+  //============================================== Score Routes =============================================//
+  // Set score routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/score', requireAuth, scoreRoutes)
+
+  // Get all scores route
+  scoreRoutes.get('/', ScoreController.getScores)
+
+  // Create score route
+  scoreRoutes.post('/', ScoreController.createScore)
+  
+  // Add score route
+  scoreRoutes.patch('/', ScoreController.addScore)
+
+  // Delete scores route
+  scoreRoutes.delete('/', ScoreController.deleteScores)
 }
