@@ -34,7 +34,11 @@ const QuizSchema = new Schema({
 QuizSchema.path('questions').validate({
     isAsync : false,
     validator: function (questions) {
-        return questions.choices.length === 4;
+        console.log(questions)
+        questions.forEach(question => {
+            if(question.choices.length!==4)return false;
+        })
+        return true;
     },
     message: 'Each question must have 4 choices.'
 })
