@@ -1,11 +1,18 @@
 "use strict"
 
-const Quiz = require('../models/quiz')
+const Quiz = require('../models/quiz'),
+      _ = require('lodash')
 
 exports.getQuizzes = function(req, res, next){
     Quiz.find({...req.query}, function(err, quizzes){
         if(err)
             return next(err)
+        quizzes.forEach(function(quiz){
+            let questions = quiz.questions
+            questions.forEach(function(question, index){
+                this[index] = _.pick(question, ['text', 'choices'])
+            }, questions)
+        })
         return res.status(200).json(quizzes)
     })
 }
@@ -23,7 +30,7 @@ exports.addQuiz = function(req, res, next){
         return res.status(422).json({"error": "Difficulty is required"})
     if(!questions)
         questions = []
-    
+
     let quiz = new Quiz({
         title: title,
         description: description,
@@ -33,7 +40,7 @@ exports.addQuiz = function(req, res, next){
     quiz.save(function(err, quiz){
         if(err)
             return next(err)
-            
+
         return res.status(201).json(quiz)
     })
 }
@@ -88,18 +95,43 @@ exports.addQuestion = function(req, res, next){
         const text = req.body.text
         const choices = req.body.choices
         const answer = req.body.answer
-        
+        if(choices.length!==4) return res.status(422).json({message: 'Question must have 4 choices.'})
+
         let question = {
             text: text,
             choices: choices,
             answer: answer
         }
-        
+
         if(question) quiz.questions.push(question)
         quiz.save(function(err, quiz){
             if(err)
                 return next(err)
             return res.status(200).json(quiz)
+        })
+    })
+}
+
+exports.calcScore = function(req, res, next){
+    const _id = req.body._id
+    const selected_choices = req.body.selected_choices
+    let correct_choices = []
+    var score = 0
+    Quiz.findOne({_id: _id}, function(err, quiz){
+        if(err)
+            return next(err)
+        if(!quiz)
+            return res.status(422).send({error: "No Quiz exists with the provided _id!"})
+        quiz.questions.forEach(function(question, index){
+            var ans = _.pick(question, 'answer').answer
+            if(selected_choices[index] === ans) score += 1
+            correct_choices.push(ans)
+        })
+
+        return res.status(200).json({
+            selected_choices: selected_choices,
+            correct_choices: correct_choices,
+            score: score
         })
     })
 }

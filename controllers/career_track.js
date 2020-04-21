@@ -21,6 +21,15 @@ exports.getCareerTracks = function(req, res, next) {
     })
 }
 
+exports.filterCareerTracks = function(req, res, next) {
+    const tags = req.query.tags.split(',')
+    CareerTrack.find({ tags: { $all: tags } }, function(err, career_tracks){
+        if (err)
+            return next(err)
+        return res.status(200).json(career_tracks)
+    })
+}
+
 exports.addCareerTrack = function(req, res, next){
     const name = req.body.name
     const image = req.body.image
@@ -30,7 +39,7 @@ exports.addCareerTrack = function(req, res, next){
     const growth = req.body.growth
     const modules = req.body.modules
     const companies = req.body.companies
-    const tags = req.body.tags
+    var tags = req.body.tags
     if(!name)
         return res.status(422).json({error: "Name is required"})
     if(!image)
@@ -43,6 +52,8 @@ exports.addCareerTrack = function(req, res, next){
         return res.status(422).json({error: "About is required"})
     if(!growth)
         return res.status(422).json({error: "Growth is required"})
+    if(!tags)
+        tags = name.split(" ")
     let career_track = new CareerTrack({
         name: name,
         image: image,
@@ -57,7 +68,7 @@ exports.addCareerTrack = function(req, res, next){
     career_track.save(function(err, career_track){
         if(err)
             return next(err)
-            
+
         const thumbnailJob = queue.create('thumbnail', {
               name: 'CareerTrack',
               url: career_track.image,
@@ -75,7 +86,7 @@ exports.addCareerTrack = function(req, res, next){
         })
 
         console.log({success: 'Successfully assigned job to the worker'});
-        
+
         return res.status(201).json(career_track)
     })
 }
@@ -93,7 +104,7 @@ exports.deleteCareerTrack = function(req, res, next){
         }
         return res.status(200).json({
             status: "SUCCESS"
-        })   
+        })
     })
 }
 
@@ -112,7 +123,8 @@ exports.editCareerTrack = function(req, res, next){
         const growth = req.body.growth
         const modules = req.body.modules
         const companies = req.body.companies
-        if(name)career_track.name = name        
+        const tags = req.body.tags
+        if(name)career_track.name = name
         if(image)career_track.image = image
         if(salary)career_track.salary = salary
         if(job_count)career_track.job_count = job_count
@@ -120,6 +132,7 @@ exports.editCareerTrack = function(req, res, next){
         if(growth)career_track.growth = growth
         if(modules)career_track.modules = modules
         if(companies)career_track.companies = companies
+        if(tags)career_track.tags = tags
         career_track.save(function(err, career_track){
             if(err)
                 return next(err)
@@ -129,3 +142,16 @@ exports.editCareerTrack = function(req, res, next){
     })
 }
 
+exports.getTags = function(req, res, next){
+    var tagsSet = new Set()
+    CareerTrack.find().select('tags').exec(function(err, tracks){
+        tracks.forEach(function(track){
+            track.tags.forEach(tag => tagsSet.add(tag))
+        })
+
+        let uniqueTags = [...tagsSet]
+        res.status(200).json({
+            tags: uniqueTags
+        })
+    })
+}
