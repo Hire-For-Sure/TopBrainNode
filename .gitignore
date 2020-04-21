@@ -3,7 +3,8 @@ build
 npm-debug.log
 .env
 .DS_Store
+
+dump.rdb
+redis-stable/
 server.cert
 server.key
-redis-stable/
-dump.rdb

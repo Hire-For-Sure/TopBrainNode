@@ -13,16 +13,16 @@ aws.config.update({
 const s3 = new aws.S3();
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+  if (file.mimetype === 'text/plain' || file.mimetype === 'application/msword' || file.mimetype === 'application/pdf') {
     cb(null, true);
   } else {
-    cb(new Error('Invalid file type, only JPEG and PNG is allowed!'), false);
+    cb(new Error('Invalid file type, only plain text, pdf and doc is allowed!'), false);
   }
 }
 
 const upload = multer({
   fileFilter,
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 100 * 1024 * 1024 },
   storage: multerS3({
     s3: s3,
     bucket: 'hfs-files',

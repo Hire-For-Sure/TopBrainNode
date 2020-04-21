@@ -37,7 +37,7 @@ const CareerTrackSchema = new Schema({
         required: true
     },
     growth: {
-        type: mongoose.Types.Decimal128
+        type: Number
     },
     modules: [
         {type: Schema.Types.ObjectId, ref: Module}
