@@ -15,6 +15,14 @@ const ChallengeSchema = new Schema({
         },
         required: true
     },
+    fileUrl: {
+        type: String,
+        validate: {
+            validator: validator.urlValidator,
+            message: props => `${props.value} is not a valid URL!`
+        },
+        required: true
+    },
     points: {
         type: Number,
         required: true

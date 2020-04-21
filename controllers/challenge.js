@@ -13,16 +13,20 @@ exports.getChallenges = function(req, res, next) {
 exports.addChallenge = function(req, res, next){
     const name = req.body.name
     const link = req.body.link
+    const fileUrl = req.body.fileUrl
     const points = req.body.points
     if(!name)
         return res.status(422).json({error: "Name is required"})
     if(!link)
         return res.status(422).json({error: "Link is required"})
+    if(!fileUrl)
+        return res.status(422).json({error: "File URL is required"})
     if(!points)
         return res.status(422).json({error: "Points are required"})
     let challenge = new Challenge({
         name: name,
         link: link,
+        fileUrl: fileUrl,
         points: points
     })
     challenge.save(function(err, challenge){
@@ -45,7 +49,7 @@ exports.deleteChallenge = function(req, res, next){
         }
         return res.status(200).json({
             status: "SUCCESS"
-        })   
+        })
     })
 }
 
@@ -58,10 +62,12 @@ exports.editChallenge = function(req, res, next){
             return res.status(422).send({error: "No challenge exists with the provided _id!"})
         const name = req.body.name
         const link = req.body.link
+        const fileUrl = req.body.fileUrl
         const points = req.body.points
-        if(name)challenge.name = name        
+        if(name)challenge.name = name
         if(link)challenge.link = link
-        if(typeof points !== Number)challenge.points = points
+        if(fileUrl)challenge.link = fileUrl
+        if(typeof points === Number)challenge.points = points
         challenge.save(function(err, challenge){
             if(err)
                 return next(err)
@@ -70,4 +76,3 @@ exports.editChallenge = function(req, res, next){
 
     })
 }
-
