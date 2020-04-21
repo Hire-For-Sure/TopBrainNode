@@ -1,6 +1,7 @@
 const AuthenticationController = require('./controllers/authentication'),
       ProfileController = require('./controllers/profile'),
       upload = require('./services/image_upload'),
+      file_upload = require('./services/doc_upload'),
       BlogController = require('./controllers/blog'),
       ChallengeController = require('./controllers/challenge'),
       CompanyController = require('./controllers/company'),
@@ -15,7 +16,7 @@ const AuthenticationController = require('./controllers/authentication'),
       passportService = require('./config/passport'),
       passport = require('passport'),
       cors = require('cors')
-      
+
 
 // Middleware to require login/auth
 const requireAuth = passport.authenticate('jwt', { session: false })
@@ -29,7 +30,8 @@ const requireLogin = function(req, res, next) {
 	})(req, res, next)
 }
 
-const singleUpload = upload.single('image')
+const singleUpload = upload.single('image'),
+      fileUpload = file_upload.single('file')
 
 module.exports = function(app) {
   // Initializing route groups
@@ -49,7 +51,7 @@ module.exports = function(app) {
 
   // Enable CORS for api calls
   app.use(cors())
-  
+
   // Set url for API group routes
   app.use('/api', apiRoutes)
 
@@ -66,7 +68,7 @@ module.exports = function(app) {
 
   // Login route
   authRoutes.post('/login', requireLogin, AuthenticationController.login)
-	
+
   //============================================== Profile Routes ==============================================//
 
   // Set user routes as subgroup/middleware to apiRoutes
@@ -77,7 +79,7 @@ module.exports = function(app) {
 
   // Add More Interests route
   userRoutes.put('/interests', ProfileController.addInterests)
-  
+
   //============================================== Image Upload Route ==============================================//
 
   // Set image upload route as subgroup/middleware to apiRoutes
@@ -88,6 +90,19 @@ module.exports = function(app) {
       }
 
       return res.json({'imageUrl': req.file.location})
+    })
+  })
+
+  //============================================== File Upload Route ==============================================//
+
+  // Set file upload route as subgroup/middleware to apiRoutes
+  apiRoutes.post('/file-upload', function(req, res) {
+    fileUpload(req, res, function(err) {
+      if (err) {
+        return res.status(422).send({errors: [{title: 'File Upload Error', detail: err}]})
+      }
+
+      return res.json({'fileUrl': req.file.location})
     })
   })
 
@@ -141,7 +156,7 @@ module.exports = function(app) {
 
   // Update company route
   companyRoutes.patch('/', CompanyController.editCompany)
-  
+
   //============================================== Course Routes ================================================//
 
   // Set course routes as subgroup/middleware to apiRoutes
@@ -193,6 +208,12 @@ module.exports = function(app) {
   // Update career track route
   careerTrackRoutes.patch('/', CareerTrackController.editCareerTrack)
 
+  // Fetch all tags route
+  careerTrackRoutes.get('/tags', CareerTrackController.getTags)
+
+  // Filter career tracks by tags route
+  careerTrackRoutes.get('/filter', CareerTrackController.filterCareerTracks)
+
   //============================================== Active Career Path Routes =============================================//
 
   // Set module routes as subgroup/middleware to apiRoutes
@@ -217,7 +238,7 @@ module.exports = function(app) {
 
   // Add completed modules to user route
   completedModuleRoutes.post('/', CompletedModuleController.addCompletedModule)
-  
+
   //============================================== Quiz Routes =============================================//
   // Set quiz routes as subgroup/middleware to apiRoutes
   apiRoutes.use('/quiz', quizRoutes)
@@ -233,10 +254,13 @@ module.exports = function(app) {
 
   // Update quiz route
   quizRoutes.patch('/', QuizController.editQuiz)
-  
+
   // Add question route
   quizRoutes.patch('/addQuestion', QuizController.addQuestion)
-  
+
+  // Add calculate score route
+  quizRoutes.post('/calcScore', QuizController.calcScore)
+
   //============================================== Score Routes =============================================//
   // Set score routes as subgroup/middleware to apiRoutes
   apiRoutes.use('/score', requireAuth, scoreRoutes)
@@ -246,7 +270,7 @@ module.exports = function(app) {
 
   // Create score route
   scoreRoutes.post('/', ScoreController.createScore)
-  
+
   // Add score route
   scoreRoutes.patch('/', ScoreController.addScore)
 
