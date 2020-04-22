@@ -5,7 +5,8 @@ const mongoose = require('mongoose'),
 
 const CompletedModuleSchema = new Schema({
     module: {type: Schema.Types.ObjectId, ref: Module},
-    user: {type: Schema.Types.ObjectId, ref: User}
+    user: {type: Schema.Types.ObjectId, ref: User},
+    status: {type: Boolean, default: false}
 })
 
 module.exports = mongoose.model('CompletedModule', CompletedModuleSchema)
