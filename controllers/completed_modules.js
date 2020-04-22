@@ -25,3 +25,17 @@ exports.addCompletedModule = function(req, res, next){
         res.status(201).json(completed_module)
     })
 }
+
+exports.markAsComplete = function(req, res, next){
+    const module_id = req.body.module_id
+    CompletedModule.findOne({ user: req.user._id, module: module_id }, function(err, completed_module){
+        if(err)
+            return next(err)
+        completed_module.status = true
+        completed_module.save(function(err, completed_module){
+            if(err)
+                return next(err)
+            res.status(200).json(completed_module)
+        })
+    })
+}

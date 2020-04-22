@@ -235,6 +235,9 @@ module.exports = function(app) {
 
   // Add completed modules to user route
   completedModuleRoutes.post('/', CompletedModuleController.addCompletedModule)
+  
+  // Mark as complete route
+  completedModuleRoutes.post('/mark/', CompletedModuleController.markAsComplete)
 
   //============================================== Quiz Routes =============================================//
   // Set quiz routes as subgroup/middleware to apiRoutes
