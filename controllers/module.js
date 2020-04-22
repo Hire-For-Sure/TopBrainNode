@@ -2,7 +2,7 @@
 
 const Module = require('./../models/module'),
       kue = require('kue')
-      
+
 require('./../services/thumbnailworker')
 
 let queue = kue.createQueue({
@@ -28,6 +28,7 @@ exports.addModule = function(req, res, next){
     var courses = req.body.courses
     var blogs = req.body.blogs
     var challenges = req.body.challenges
+    var tags = req.body.tags
     if(!name)
         return res.status(422).json({"error": "Name is required"})
     if(!description)
@@ -40,18 +41,21 @@ exports.addModule = function(req, res, next){
         blogs = []
     if(!challenges)
         challenges = []
+    if(!tags)
+        tags = []
     let module = new Module({
         name: name,
         description: description,
         image: image,
         courses: courses,
         blogs: blogs,
-        challenges: challenges
+        challenges: challenges,
+        tags: tags
     })
     module.save(function(err, module){
         if(err)
             return next(err)
-            
+
         const thumbnailJob = queue.create('thumbnail', {
               name: 'Module',
               url: module.image,
@@ -69,7 +73,7 @@ exports.addModule = function(req, res, next){
         })
 
         console.log({success: 'Successfully assigned job to the worker'});
-        
+
         return res.status(201).json(module)
     })
 }
@@ -104,16 +108,32 @@ exports.editModule = function(req, res, next){
         const courses = req.body.courses
         const challenges = req.body.challenges
         const blogs = req.body.blogs
+        const tags = req.body.tags
         if(name)module.name = name
         if(description)module.description = description
         if(image)module.image = image
         if(courses)module.courses = courses
         if(challenges)module.challenges = challenges
         if(blogs)module.blogs = blogs
+        if(tags)module.tags = tags
         module.save(function(err, module){
             if(err)
                 return next(err)
             return res.status(200).json(module)
+        })
+    })
+}
+
+exports.getTags = function(req, res, next){
+    var tagsSet = new Set()
+    Module.find().select('tags').exec(function(err, modules){
+        modules.forEach(function(module){
+            module.tags.forEach(tag => tagsSet.add(tag))
+        })
+
+        let uniqueTags = [...tagsSet]
+        res.status(200).json({
+            tags: uniqueTags
         })
     })
 }

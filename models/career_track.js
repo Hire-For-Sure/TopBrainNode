@@ -17,13 +17,13 @@ const CareerTrackSchema = new Schema({
         },
         required: true
     },
-    thumbnailurl: {
+    thumbnailUrl: {
         type: String,
         validate: {
             validator: validator.urlValidator,
             message: props => `${props.value} is not a valid URL!`
         }
-    },    
+    },
     salary: {
         type: Number,
         required: true
@@ -37,16 +37,13 @@ const CareerTrackSchema = new Schema({
         required: true
     },
     growth: {
-        type: Number
+        type: mongoose.Types.Decimal128
     },
     modules: [
         {type: Schema.Types.ObjectId, ref: Module}
     ],
     companies: [
         {type: Schema.Types.ObjectId, ref: Company}
-    ],
-    tags: [
-        {type: String}
     ]
 })
 

@@ -4,7 +4,7 @@ const mongoose = require('mongoose'),
       Course = require('./course'),
       Blog = require('./blog'),
       Challenge = require('./challenge')
-    
+
 const ModuleSchema = new Schema({
     name: {
         type: String,
@@ -22,7 +22,7 @@ const ModuleSchema = new Schema({
         },
         required: true
     },
-    thumbnailurl: {
+    thumbnailUrl: {
         type: String,
         validate: {
             validator: validator.urlValidator,
@@ -37,6 +37,9 @@ const ModuleSchema = new Schema({
     ],
     challenges: [
         {type: Schema.Types.ObjectId, ref: Challenge}
+    ],
+    tags: [
+        {type: String}
     ]
 })
 

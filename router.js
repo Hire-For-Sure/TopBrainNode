@@ -89,7 +89,7 @@ module.exports = function(app) {
         return res.status(422).send({errors: [{title: 'Image Upload Error', detail: err}]})
       }
 
-      return res.json({'imageUrl': req.file.location})
+      return res.json({ imageUrl: req.file.location })
     })
   })
 
@@ -102,7 +102,7 @@ module.exports = function(app) {
         return res.status(422).send({errors: [{title: 'File Upload Error', detail: err}]})
       }
 
-      return res.json({'fileUrl': req.file.location})
+      return res.json({ fileUrl: req.file.location })
     })
   })
 
@@ -191,6 +191,9 @@ module.exports = function(app) {
   // Update modules route
   moduleRoutes.patch('/', ModuleController.editModule)
 
+  // Fetch all tags route
+  moduleRoutes.get('/tags', ModuleController.getTags)
+
   //============================================== Career Track Routes =============================================//
 
   // Set career-track routes as subgroup/middleware to apiRoutes
@@ -207,12 +210,6 @@ module.exports = function(app) {
 
   // Update career track route
   careerTrackRoutes.patch('/', CareerTrackController.editCareerTrack)
-
-  // Fetch all tags route
-  careerTrackRoutes.get('/tags', CareerTrackController.getTags)
-
-  // Filter career tracks by tags route
-  careerTrackRoutes.get('/filter', CareerTrackController.filterCareerTracks)
 
   //============================================== Active Career Path Routes =============================================//
 

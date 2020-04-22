@@ -11,7 +11,7 @@ const CompanySchema = new Schema({
         },
         required: true
     },
-    thumbnailurl: {
+    thumbnailUrl: {
         type: String,
         validate: {
             validator: validator.urlValidator,
