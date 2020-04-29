@@ -210,6 +210,9 @@ module.exports = function(app) {
 
   // Update career track route
   careerTrackRoutes.patch('/', CareerTrackController.editCareerTrack)
+  
+  // Fetch all categories route
+  careerTrackRoutes.get('/categories', CareerTrackController.getCategories)
 
   //============================================== Active Career Path Routes =============================================//
 

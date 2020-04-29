@@ -36,6 +36,10 @@ const CareerTrackSchema = new Schema({
         type: String,
         required: true
     },
+    category: {
+        type: String,
+        required: true
+    },
     growth: {
         type: mongoose.Types.Decimal128
     },

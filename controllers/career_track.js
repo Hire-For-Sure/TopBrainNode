@@ -27,6 +27,7 @@ exports.addCareerTrack = function(req, res, next){
     const salary = req.body.salary
     const job_count = req.body.job_count
     const about = req.body.about
+    const category = req.body.category
     const growth = req.body.growth
     const modules = req.body.modules
     const companies = req.body.companies
@@ -40,6 +41,8 @@ exports.addCareerTrack = function(req, res, next){
         return res.status(422).json({error: "Job count is required"})
     if(!about)
         return res.status(422).json({error: "About is required"})
+    if(!category)
+        return res.status(422).json({error: "Category is required"})
     if(!growth)
         return res.status(422).json({error: "Growth is required"})
     let career_track = new CareerTrack({
@@ -48,6 +51,7 @@ exports.addCareerTrack = function(req, res, next){
         salary: salary,
         job_count: job_count,
         about: about,
+        category: category,
         growth: growth,
         modules: modules,
         companies: companies
@@ -107,6 +111,7 @@ exports.editCareerTrack = function(req, res, next){
         const salary = req.body.salary
         const job_count = req.body.job_count
         const about = req.body.about
+        const category = req.body.category
         const growth = req.body.growth
         const modules = req.body.modules
         const companies = req.body.companies
@@ -115,6 +120,7 @@ exports.editCareerTrack = function(req, res, next){
         if(salary)career_track.salary = salary
         if(job_count)career_track.job_count = job_count
         if(about)career_track.about = about
+        if(category)career_track.category = category
         if(growth)career_track.growth = growth
         if(modules)career_track.modules = modules
         if(companies)career_track.companies = companies
@@ -124,5 +130,13 @@ exports.editCareerTrack = function(req, res, next){
             res.status(200).json(career_track)
         })
 
+    })
+}
+
+exports.getCategories = function(req, res, next){
+    CareerTrack.find().select('category').exec(function(err, categories){
+        res.status(200).json({
+            categories: categories
+        })
     })
 }
