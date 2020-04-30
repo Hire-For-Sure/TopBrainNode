@@ -217,7 +217,7 @@ module.exports = function(app) {
   //============================================== Active Career Path Routes =============================================//
 
   // Set module routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/active-career-paths', activeCareerPathRoutes)
+  apiRoutes.use('/active-career-paths', requireAuth, activeCareerPathRoutes)
 
   // Get all active career paths route
   activeCareerPathRoutes.get('/', ActiveCareerPathCotroller.getCareerPaths)
@@ -231,7 +231,7 @@ module.exports = function(app) {
   //============================================== Completed Modules Routes =============================================//
 
   // Set completed module routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/completed-modules', completedModuleRoutes)
+  apiRoutes.use('/completed-modules', requireAuth, completedModuleRoutes)
 
   // Get all completed modules route
   completedModuleRoutes.get('/', CompletedModuleController.getCompletedModules)
