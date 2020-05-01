@@ -5,7 +5,7 @@ const mongoose = require('mongoose'),
 
 const ActiveCareerPathSchema = new Schema({
     user: {type: Schema.Types.ObjectId, ref: User},
-    career_track: {type: Schema.Types.ObjectId, ref: CareerTrack}
+    career_track: {type: Schema.Types.ObjectId, ref: CareerTrack, required: true}
 })
 
 module.exports = mongoose.model('ActiveCareerPath', ActiveCareerPathSchema)
