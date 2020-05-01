@@ -15,6 +15,8 @@ exports.getCareerPaths = function(req, res, next){
 
 exports.addCareerPath = function(req, res, next){
     const career_track_id = req.body.career_track_id
+    if(!career_track_id)
+        return res.status(422).json({error: "Career Track id is required"})
     let active_career_path = new ActiveCareerPath({
         user: req.user._id,
         career_track: career_track_id
