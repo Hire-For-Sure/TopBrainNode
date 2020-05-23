@@ -6,6 +6,7 @@ const kue = require('kue'),
       CareerTrack = require('../models/career_track'),
       Company = require('../models/company'),
       Module = require('../models/module'),
+      SuperQuiz = require('../models/superquiz'),
       config = require('../config/main')
 
 let queue = kue.createQueue({
@@ -25,7 +26,7 @@ const uploadThumbnail = (job, done) => {
   const url = job.data.url
   const modelName = job.data.name
   const _id = job.data._id
-  
+
   fetch(url)
   .then(res => res.buffer())
   .then(buffer => {
@@ -47,16 +48,16 @@ const uploadThumbnail = (job, done) => {
                 }
             }
         }
-        request(options, function (error, response) { 
+        request(options, function (error, response) {
             if (error) throw new Error(error)
             let thumbnailUrl = JSON.parse(response.body).imageUrl
             if(modelName == 'CareerTrack'){
                 CareerTrack.findOne({ _id: _id }, function(err, career_track){
                     if(err)
                         return new Error(err)
-                    
+
                     if(thumbnailUrl)career_track.thumbnailUrl = thumbnailUrl
-                    
+
                     career_track.save(function(err, career_track){
                         if(err)
                             return new Error(err)
@@ -65,14 +66,14 @@ const uploadThumbnail = (job, done) => {
 
                 })
             }
-            
+
             if(modelName == 'Company'){
                 Company.findOne({ _id: _id }, function(err, company){
                     if(err)
                         return new Error(err)
-                    
+
                     if(thumbnailUrl)company.thumbnailUrl = thumbnailUrl
-                    
+
                     company.save(function(err, company){
                         if(err)
                             return new Error(err)
@@ -81,15 +82,31 @@ const uploadThumbnail = (job, done) => {
 
                 })
             }
-            
+
             if(modelName == 'Module'){
                 Module.findOne({ _id: _id }, function(err, module){
                     if(err)
                         return new Error(err)
-                    
+
                     if(thumbnailUrl)module.thumbnailUrl = thumbnailUrl
-                    
+
                     module.save(function(err, module){
+                        if(err)
+                            return new Error(err)
+                        console.log("Successfully updated thumbnail Url")
+                    })
+
+                })
+            }
+
+            if(modelName == 'SuperQuiz'){
+                SuperQuiz.findOne({ _id: _id }, function(err, superquiz){
+                    if(err)
+                        return new Error(err)
+
+                    if(thumbnailUrl)superquiz.thumbnailUrl = thumbnailUrl
+
+                    superquiz.save(function(err, superquiz){
                         if(err)
                             return new Error(err)
                         console.log("Successfully updated thumbnail Url")

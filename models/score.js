@@ -10,6 +10,7 @@ const ScoreSchema = new Schema({
         _id: false,
         superquiz: {type: Schema.Types.ObjectId, ref: SuperQuiz},
         section_score: [{
+            _id: false,
             section: {type: Schema.Types.ObjectId, ref: Section},
             score: {type: Number, required: true}
         }]

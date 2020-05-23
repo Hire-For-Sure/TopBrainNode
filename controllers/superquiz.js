@@ -2,7 +2,18 @@
 
 const SuperQuiz = require('./../models/superquiz'),
       Question = require('./../models/section').Question,
-      _ = require('lodash')
+      _ = require('lodash'),
+      kue = require('kue')
+
+require('./../services/thumbnailworker')
+
+let queue = kue.createQueue({
+  prefix: 'q',
+  redis: {
+    host: 'localhost',
+    port: 6379 // default
+  }
+})
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -36,12 +47,39 @@ exports.getSuperQuizzes = function(req, res, next) {
 
 exports.addSuperQuiz = function(req, res, next){
     const sections = req.body.sections
+    const title = req.body.title
+    const image = req.body.image
+    if(!title)
+        return res.status(422).json({"error": "Title is required"})
+    if(!image)
+        return res.status(422).json({error: "Image is required"})
     let superquiz = new SuperQuiz({
+        title: title,
+        image: image,
         sections: sections
     })
     superquiz.save(function(err, superquiz){
         if(err)
             return next(err)
+
+        const thumbnailJob = queue.create('thumbnail', {
+              name: 'SuperQuiz',
+              url: superquiz.image,
+              _id: superquiz._id
+        })
+        .removeOnComplete(true)
+        .attempts(5)
+        .backoff({delay: 60*1000, type:'exponential'})
+        .save()
+
+        thumbnailJob.on('failed', function(errorMessage){
+            console.log('Job failed')
+            let error = JSON.parse(errorMessage)
+            console.log(error)
+        })
+
+        console.log({success: 'Successfully assigned job to the worker'});
+
         res.status(201).json({
             _id: superquiz._id
         })
