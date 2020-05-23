@@ -1,17 +1,18 @@
 const mongoose = require('mongoose'),
       Schema = mongoose.Schema,
-      User = require('./user')
-      Quiz = require('./quiz')
-    
+      User = require('./user'),
+      SuperQuiz = require('./superquiz'),
+      Section = require('./section').Section
+
 const ScoreSchema = new Schema({
     user: {type: Schema.Types.ObjectId, ref: User},
     scores: [{
         _id: false,
-        quiz: {type: Schema.Types.ObjectId, ref: Quiz},
-        score: {
-            type: Number,
-            required: true
-        }
+        superquiz: {type: Schema.Types.ObjectId, ref: SuperQuiz},
+        section_score: [{
+            section: {type: Schema.Types.ObjectId, ref: Section},
+            score: {type: Number, required: true}
+        }]
     }]
 })
 

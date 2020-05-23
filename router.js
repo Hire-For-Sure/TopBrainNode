@@ -12,6 +12,9 @@ const AuthenticationController = require('./controllers/authentication'),
       CompletedModuleController = require('./controllers/completed_modules'),
       QuizController = require('./controllers/quiz'),
       ScoreController = require('./controllers/score'),
+      JobController = require('./controllers/job'),
+      SectionController = require('./controllers/section'),
+      SuperQuizController = require('./controllers/superquiz'),
       express = require('express'),
       passportService = require('./config/passport'),
       passport = require('passport'),
@@ -47,7 +50,10 @@ module.exports = function(app) {
         activeCareerPathRoutes = express.Router(),
         completedModuleRoutes = express.Router(),
         quizRoutes = express.Router(),
-        scoreRoutes = express.Router()
+        scoreRoutes = express.Router(),
+        jobRoutes = express.Router(),
+        sectionRoutes = express.Router(),
+        superquizRoutes = express.Router()
 
   // Enable CORS for api calls
   app.use(cors())
@@ -210,7 +216,7 @@ module.exports = function(app) {
 
   // Update career track route
   careerTrackRoutes.patch('/', CareerTrackController.editCareerTrack)
-  
+
   // Fetch all categories route
   careerTrackRoutes.get('/categories', CareerTrackController.getCategories)
 
@@ -238,7 +244,7 @@ module.exports = function(app) {
 
   // Add completed modules to user route
   completedModuleRoutes.post('/', CompletedModuleController.addCompletedModule)
-  
+
   // Mark as complete route
   completedModuleRoutes.post('/mark/', CompletedModuleController.markAsComplete)
 
@@ -279,4 +285,62 @@ module.exports = function(app) {
 
   // Delete scores route
   scoreRoutes.delete('/', ScoreController.deleteScores)
+
+  //============================================== Job Routes =============================================//
+  // Set job routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/job', jobRoutes)
+
+  // Get all jobs route
+  jobRoutes.get('/', JobController.getJobs)
+
+  // Create job route
+  jobRoutes.post('/', JobController.addJob)
+
+  // Add job route
+  jobRoutes.patch('/', JobController.editJob)
+
+  // Delete job route
+  jobRoutes.delete('/', JobController.deleteJob)
+
+  // Send a response route
+  jobRoutes.patch('/', JobController.addResponse)
+
+  //============================================== Section Routes =============================================//
+  // Set section routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/section', sectionRoutes)
+
+  // Get all sections route
+  sectionRoutes.get('/', SectionController.getSections)
+
+  // Create section route
+  sectionRoutes.post('/', SectionController.addSection)
+
+  // Delete section route
+  sectionRoutes.delete('/', SectionController.deleteSection)
+
+  // Update section route
+  sectionRoutes.patch('/', SectionController.editSection)
+
+  // Add section route
+  sectionRoutes.patch('/addQuestion', SectionController.addQuestion)
+
+  //============================================== Super Quiz Routes =============================================//
+  // Set superquiz routes as subgroup/middleware to apiRoutes
+  apiRoutes.use('/superquiz', superquizRoutes)
+
+  // Get all superquiz route
+  superquizRoutes.get('/', SuperQuizController.getSuperQuizzes)
+
+  // Create superquiz route
+  superquizRoutes.post('/', SuperQuizController.addSuperQuiz)
+
+  // Delete superquiz route
+  superquizRoutes.delete('/', SuperQuizController.deleteSuperQuiz)
+
+  // Update superquiz route
+  superquizRoutes.patch('/', SuperQuizController.editSuperQuiz)
+
+  // Calculate superquiz score route
+  superquizRoutes.post('/calcScore', SuperQuizController.calcScore)
+
 }

@@ -1,6 +1,70 @@
 const mongoose = require('mongoose'),
+      validator = require('./../utils/validators'),
       Schema = mongoose.Schema,
       bcrypt = require('bcrypt-nodejs')
+
+const TechExperienceSchema = new Schema({
+    experience_type: {
+      type: String
+    },
+    skill_level: {
+      type: String,
+      enum: ['beginner', 'moderate', 'advanced']
+    },
+    years_of_experience: {
+      type: Number
+    }
+})
+
+const WorkExperienceSchema = new Schema({
+    position: {
+      type: String
+    },
+    company: {
+      type: String
+    },
+    tag: [{
+      type: String
+    }],
+    description: {
+      type: String
+    },
+    location: {
+      type: String
+    }
+})
+
+const EducationSchema = new Schema({
+  university: {
+    type: String
+  },
+  branch: {
+    type: String
+  },
+  year_graduation: {
+    type: Number
+  }
+})
+
+const ProjectSchema = new Schema({
+  name: {
+    type: String
+  },
+  link: {
+    type: String,
+    validate: {
+        validator: validator.urlValidator,
+        message: props => `${props.value} is not a valid URL!`
+    }
+  },
+  tag: {
+    type: String
+  },
+  description: {
+    type: String
+  }
+})
+
 
 // User Schema
 const UserSchema = new Schema({
@@ -24,17 +88,60 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  profile: {
-    name: { type: String, required: true },
-    university: { type: String, required: true, required: true },
-    branch: { type: String, required: true },
-    year_graduation: { type: Number, required: true },
-    country: { type: String, required: true },
-    state: { type: String, required: true },
-    city: { type: String, required: true }
+  first_name: {
+    type: String,
+    required: true
   },
-  bio: { type: String, required: true },
-  interests: [{ type: String }],
+  last_name: {
+    type: String
+  },
+  user_type: {
+    type: String,
+    enum: ['student', 'professional']
+  },
+  remote_interest: {
+    type: Boolean
+  },
+  linkedIn: {
+    type: String,
+    validate: {
+        validator: validator.urlValidator,
+        message: props => `${props.value} is not a valid URL!`
+    }
+  },
+  github: {
+    type: String,
+    validate: {
+        validator: validator.urlValidator,
+        message: props => `${props.value} is not a valid URL!`
+    }
+  },
+  tech_experience: [TechExperienceSchema],
+  technologies: [{
+    type: String
+  }],
+  work_experience: [WorkExperienceSchema],
+  education: [EducationSchema],
+  projects: [ProjectSchema],
+  country: {
+    type: String,
+    required: true
+  },
+  state: {
+    type: String,
+    required: true
+  },
+  city: {
+    type: String,
+    required: true
+  },
+  bio: {
+    type: String,
+    required: true
+  },
+  interests: [{
+    type: String
+  }],
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date }
 },

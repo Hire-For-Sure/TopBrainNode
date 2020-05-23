@@ -16,7 +16,7 @@ exports.createScore = function(req, res, next){
     var scores = req.body.scores
     if(!scores)
         scores = []
-    
+
     let score = new Score({
         user: user,
         scores: scores
@@ -30,8 +30,8 @@ exports.createScore = function(req, res, next){
 
 exports.addScore = function(req, res, next){
     const user = req.user._id
-    const quiz = req.body.quiz
-    const _score = req.body.score
+    const superquiz = req.body.superquiz
+    const section_score = req.body.section_score
     Score.findOne({user: user}, function(err, score){
         if(err) return next(err)
         if(!score){
@@ -39,8 +39,8 @@ exports.addScore = function(req, res, next){
                 error: "No Score exists with the provided _id!"
             })
         }
-        
-        score.scores.push({quiz: quiz, score: _score})
+
+        score.scores.push({superquiz: quiz, section_score: section_score})
         score.save(function(err, score){
             if(err)
                 return next(err)
@@ -65,4 +65,3 @@ exports.deleteScores = function(req, res, next){
         })
     })
 }
-

@@ -95,12 +95,14 @@ exports.addQuestion = function(req, res, next){
         const text = req.body.text
         const choices = req.body.choices
         const answer = req.body.answer
+        const explaination = req.body.explaination
         if(choices.length!==4) return res.status(422).json({message: 'Question must have 4 choices.'})
 
         let question = {
             text: text,
             choices: choices,
-            answer: answer
+            answer: answer,
+            explaination: explaination
         }
 
         if(question) quiz.questions.push(question)

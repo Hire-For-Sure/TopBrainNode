@@ -28,6 +28,10 @@ const QuizSchema = new Schema({
         answer: {
             type: Number,
             required: true
+        },
+        explaination: {
+            type: String,
+            required: true
         }
     }]
 })
