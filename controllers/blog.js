@@ -56,7 +56,6 @@ exports.editBlog = function(req, res, next){
         const link = req.body.link
         const objectives = req.body.objectives
         if(name)blog.name = name
-        
         if(link)blog.link = link
         if(objectives)blog.objectives = objectives
         blog.save(function(err, blog){

@@ -66,9 +66,6 @@ module.exports = function(app) {
   // Set auth routes as subgroup/middleware to apiRoutes
   apiRoutes.use('/auth', authRoutes)
 
-  // Verification route
-  authRoutes.post('/verify', AuthenticationController.verify)
-
   // Registeration Details route
   authRoutes.post('/register', AuthenticationController.register)
 
@@ -83,8 +80,8 @@ module.exports = function(app) {
   // Get Profile route
   userRoutes.get('/', ProfileController.getProfile)
 
-  // Add More Interests route
-  userRoutes.put('/interests', ProfileController.addInterests)
+  // Update Profile route
+  userRoutes.patch('/', ProfileController.editProfile)
 
   //============================================== Image Upload Route ==============================================//
 

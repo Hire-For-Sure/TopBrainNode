@@ -7,6 +7,7 @@ const kue = require('kue'),
       Company = require('../models/company'),
       Module = require('../models/module'),
       SuperQuiz = require('../models/superquiz'),
+      User = require('../models/user'),
       config = require('../config/main')
 
 let queue = kue.createQueue({
@@ -107,6 +108,22 @@ const uploadThumbnail = (job, done) => {
                     if(thumbnailUrl)superquiz.thumbnailUrl = thumbnailUrl
 
                     superquiz.save(function(err, superquiz){
+                        if(err)
+                            return new Error(err)
+                        console.log("Successfully updated thumbnail Url")
+                    })
+
+                })
+            }
+
+            if(modelName == 'User'){
+                User.findOne({ _id: _id }, function(err, user){
+                    if(err)
+                        return new Error(err)
+
+                    if(thumbnailUrl)user.profile.thumbnailUrl = thumbnailUrl
+
+                    user.save(function(err, user){
                         if(err)
                             return new Error(err)
                         console.log("Successfully updated thumbnail Url")

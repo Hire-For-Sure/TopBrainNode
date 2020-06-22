@@ -3,10 +3,26 @@ const mongoose = require('mongoose'),
       Schema = mongoose.Schema,
       User = require('./user')
 
+const ResponseSchema = new Schema({
+    question_id: {type: Schema.Types.ObjectId},
+    response_text: {type: String},
+    file: {
+      type: String,
+      validate: {
+          validator: validator.urlValidator,
+          message: props => `${props.value} is not a valid URL!`
+      }
+    }
+})
+
 const JobSchema = new Schema({
     title: {
       type: String,
       required: true
+    },
+    company: {
+        type: String,
+        required: true
     },
     category: {
       type: String,
@@ -17,21 +33,15 @@ const JobSchema = new Schema({
       required: true
     },
     skills: [{
-      type: String,
-      required: true
+      type: String
     }],
     nature: {
       type: String,
-      required: true
+      required: true,
+      enum: ['Remote', 'Full-time']
     },
     experienceLevel: {
-      type: String,
-      enum: ['Beginner', 'Moderate', 'Advanced'],
-      required: true
-    },
-    time: {
-      type: Number,
-      required: true
+      type: String
     },
     questions: [{
       type: String,
@@ -39,34 +49,7 @@ const JobSchema = new Schema({
     }],
     responses: [{
       user_id: {type: Schema.Types.ObjectId, ref: User},
-      question_responses: [{
-        question_id: {type: Schema.Types.ObjectId},
-        response_text: {type: String},
-        file: {
-          type: String,
-          validate: {
-              validator: validator.urlValidator,
-              message: props => `${props.value} is not a valid URL!`
-          }
-        }
-      }]
-    }],
-    active: {
-      type: Boolean,
-      default: true
-    },
-    user_type: {
-      type: String,
-      enum: ['Student', 'Professional'],
-      required: true
-    },
-    attatchments: [{
-      _id: false,
-      type: String,
-      validate: {
-          validator: validator.urlValidator,
-          message: props => `${props.value} is not a valid URL!`
-      }
+      question_responses: [ResponseSchema]
     }]
 })
 

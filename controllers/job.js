@@ -12,18 +12,17 @@ exports.getJobs = function(req, res, next) {
 
 exports.addJob = function(req, res, next){
     const title = req.body.title
+    const company = req.body.company
     const category = req.body.category
     const description = req.body.description
     const skills = req.body.skills
     const nature = req.body.nature
     const experienceLevel = req.body.experienceLevel
-    const time = req.body.time
     const questions = req.body.questions
-    const active = req.body.active
-    const user_type = req.body.user_type
-    var attatchments = req.body.attatchments
     if(!title)
         return res.status(422).json({error: "Title is required"})
+    if(!company)
+        return res.status(422).json({error: "Company is required"})
     if(!category)
         return res.status(422).json({error: "Category is required"})
     if(!description)
@@ -34,27 +33,18 @@ exports.addJob = function(req, res, next){
         return res.status(422).json({error: "Job Nature is required"})
     if(!experienceLevel)
         return res.status(422).json({error: "Experience Level is required"})
-    if(!time)
-        return res.status(422).json({error: "Job time is required"})
     if(!questions)
         return res.status(422).json({error: "Questions are required"})
-    if(!active)
-        return res.status(422).json({error: "Job status is required"})
-    if(!attatchments)
-        attatchments = []
 
     let job = new Job({
       title: title,
+      company: company,
       category: category,
       description: description,
       skills: skills,
       nature: nature,
       experienceLevel: experienceLevel,
-      time: time,
-      questions: questions,
-      active: active,
-      user_type: user_type,
-      attatchments: attatchments
+      questions: questions
     })
     job.save(function(err, job){
         if(err)
@@ -88,27 +78,21 @@ exports.editJob = function(req, res, next){
         if(!job)
             return res.status(422).send({error: "No job exists with the provided _id!"})
         const title = req.body.title
+        const company = req.body.company
         const category = req.body.category
         const description = req.body.description
         const skills = req.body.skills
         const nature = req.body.nature
         const experienceLevel = req.body.experienceLevel
-        const time = req.body.time
         const questions = req.body.questions
-        const active = req.body.active
-        const user_type = req.body.user_type
-        const attatchments = req.body.attatchments
         if(title)job.title = title
+        if(company)job.company = company
         if(category)job.category = category
         if(description)job.description = description
         if(skills)job.skills = skills
         if(nature)job.nature = nature
         if(experienceLevel)job.experienceLevel = experienceLevel
-        if(time)job.time = time
         if(questions)job.questions = questions
-        if(active)job.active = active
-        if(user_type)job.user_type = user_type
-        if(attatchments)job.attatchments = attatchments
         job.save(function(err, job){
             if(err)
                 return next(err)
