@@ -16,7 +16,7 @@ function generateToken(user) {
 function setUserInfo(request) {
     return {
         _id: request._id,
-        email: request.profile,
+        profile: request.profile,
         personalInfo: request.personalInfo
     }
 }

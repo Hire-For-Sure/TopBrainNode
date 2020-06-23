@@ -6,11 +6,11 @@ const passport = require('passport'),
       ExtractJwt = require('passport-jwt').ExtractJwt,
       LocalStrategy = require('passport-local').Strategy
 
-const localOptions = { emailField: 'email' }
+const localOptions = { usernameField: 'email' }
 
 // Setting up local login strategy
 const localLogin = new LocalStrategy(localOptions, function(email, password, done) {
-  User.findOne({email: email}, function(err, user) {
+  User.findOne({'personalInfo.email': email}, function(err, user) {
     if(err) { return done(err) }
     if(!user) { return done(null, false, { error: 'Your email could not be verified. Please try again.' }) }
 
