@@ -39,8 +39,10 @@ exports.addScore = function(req, res, next){
                 error: "No Score exists with the provided _id!"
             })
         }
-
-        score.scores.push({superquiz: quiz, section_score: section_score})
+        const idx = score.scores.findIndex(o => o.superquiz === superquiz)
+        idx === -1 ?
+            score.scores.push({superquiz: superquiz, section_score: section_score})
+            :score.scores[idx] = {superquiz: superquiz, section_score: section_score}
         score.save(function(err, score){
             if(err)
                 return next(err)

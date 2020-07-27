@@ -1,28 +1,15 @@
 const mongoose = require('mongoose'),
     validator = require('./../utils/validators'),
     Schema = mongoose.Schema,
-    Section = require('./section').Section
+    Section = require('./section').Section,
+    CareerTrack = require('./career_track')
 
 const SuperQuizSchema = new Schema({
     title: {
-      type: String,
-      required: true
-    },
-    image: {
-      type: String,
-      validate: {
-          validator: validator.urlValidator,
-          message: props => `${props.value} is not a valid URL!`
-      },
-      required: true
-    },
-    thumbnailUrl: {
         type: String,
-        validate: {
-            validator: validator.urlValidator,
-            message: props => `${props.value} is not a valid URL!`
-        }
+        required: true
     },
+    career_track: {type: Schema.Types.ObjectId, ref: CareerTrack},
     sections: [{
       _id: false,
       section: {type: Schema.Types.ObjectId, ref: Section},
