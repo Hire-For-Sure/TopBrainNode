@@ -9,10 +9,10 @@ const express = require('express'),
       router = require('./router')
 
 // Database Connection
-mongoose.connect(config.database)
+mongoose.connect(config.database, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true})
 
 // Start the server
-const server = app.listen(config.port, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true})
+const server = app.listen(config.port)
 console.log('Your server is running on port ' + config.port + '.')
 
 // Setting up basic middleware for all Express requests
