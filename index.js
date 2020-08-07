@@ -12,7 +12,7 @@ const express = require('express'),
 mongoose.connect(config.database)
 
 // Start the server
-const server = app.listen(config.port)
+const server = app.listen(config.port, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true})
 console.log('Your server is running on port ' + config.port + '.')
 
 // Setting up basic middleware for all Express requests

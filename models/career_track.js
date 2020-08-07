@@ -1,6 +1,7 @@
 const mongoose = require('mongoose'),
     validator = require('./../utils/validators'),
     Schema = mongoose.Schema,
+    SuperQuiz = require('./superquiz'),
     Company = require('./company'),
     Module = require('./module')
 
@@ -43,6 +44,7 @@ const CareerTrackSchema = new Schema({
     growth: {
         type: mongoose.Types.Decimal128
     },
+    superquiz: {type: Schema.Types.ObjectId, ref: SuperQuiz},
     modules: [
         {type: Schema.Types.ObjectId, ref: Module}
     ],

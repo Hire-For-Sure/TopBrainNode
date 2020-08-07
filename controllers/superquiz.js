@@ -31,7 +31,6 @@ async function calcPercentile(superquiz, user_scores) {
 exports.getSuperQuizzes = function(req, res, next) {
     SuperQuiz.find({...req.query})
     .populate({path: "sections.section", populate: {path: "relevant_content", model: "Module"}})
-    .populate('career_track', ['image', 'thumbnailUrl'])
     .exec(function(err, superquizzes){
         if (err)
         return next(err)
@@ -54,14 +53,10 @@ exports.getSuperQuizzes = function(req, res, next) {
 exports.addSuperQuiz = function(req, res, next){
     const title = req.body.title
     const sections = req.body.sections
-    const career_track_id = req.body.career_track_id
     if(!title)
     return res.status(422).json({"error": "Title is required"})
-    if(!career_track_id)
-    return res.status(422).json({"error": "CareerTrack id is required"})
     let superquiz = new SuperQuiz({
         title: title,
-        career_track: career_track_id,
         sections: sections
     })
     superquiz.save(function(err, superquiz){
@@ -123,15 +118,14 @@ exports.calcScore = function(req, res, next){
         let sections = superquiz.sections
         sections.forEach(function(item){
             var score = 0
-            let submitted_response = submitted_quiz.find(o => o.section_id == item.section._id ).response
-            let questions = _.intersectionWith(item.section.questions, submitted_response, (o1, o2) => o1._id == o2.question_id)
-            let new_questions = []
+            var maxScore = 0
+            let submitted_response = submitted_quiz.find(o => o.section_id === item.section._id ).response
+            let questions = _.intersectionWith(item.section.questions, submitted_response, (o1, o2) => o1._id === o2.question_id)
             questions.forEach(function(question){
-                let submitted_question = submitted_response.find(o => o.question_id == question._id)
-                if(submitted_question.answer == question.answer) score += 1
-                new_questions.push({...question.toObject(), selected_choice: submitted_question.answer})
+                let submitted_question = submitted_response.find(o => o.question_id === question._id)
+                if(submitted_question.answer === question.answer) score += 1
             })
-            result.push({section_id: item.section._id, questions: new_questions, score: score})
+            result.push({section_id: item.section._id, score: score, maxScore: questions.length})
         })
         async function foo(){
             const ans = await calcPercentile(_id, result)

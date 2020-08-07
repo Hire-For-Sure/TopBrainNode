@@ -29,6 +29,7 @@ exports.addCareerTrack = function(req, res, next){
     const about = req.body.about
     const category = req.body.category
     const growth = req.body.growth
+    const superquiz = req.body.superquiz
     const modules = req.body.modules
     const companies = req.body.companies
     if(!name)
@@ -45,6 +46,8 @@ exports.addCareerTrack = function(req, res, next){
         return res.status(422).json({error: "Category is required"})
     if(!growth)
         return res.status(422).json({error: "Growth is required"})
+    if(!superquiz)
+        return res.status(422).json({error: "Superquiz id is required"})
     let career_track = new CareerTrack({
         name: name,
         image: image,
@@ -53,6 +56,7 @@ exports.addCareerTrack = function(req, res, next){
         about: about,
         category: category,
         growth: growth,
+        superquiz: superquiz,
         modules: modules,
         companies: companies
     })
@@ -113,6 +117,7 @@ exports.editCareerTrack = function(req, res, next){
         const about = req.body.about
         const category = req.body.category
         const growth = req.body.growth
+        const superquiz = req.body.superquiz
         const modules = req.body.modules
         const companies = req.body.companies
         if(name)career_track.name = name
@@ -122,6 +127,7 @@ exports.editCareerTrack = function(req, res, next){
         if(about)career_track.about = about
         if(category)career_track.category = category
         if(growth)career_track.growth = growth
+        if(superquiz)career_track.superquiz = superquiz
         if(modules)career_track.modules = modules
         if(companies)career_track.companies = companies
         career_track.save(function(err, career_track){
