@@ -3,6 +3,18 @@
 const CareerTrack = require('./../models/career_track'),
       kue = require('kue')
 
+
+const { MongoClient } = require('mongodb');
+var ObjectID = require('mongodb').ObjectID;
+const url = 'mongodb://localhost:27017';
+var collection;
+MongoClient.connect(url, { useUnifiedTopology: true }, function(err, client) {
+  console.log("Connected successfully to server");
+  const db = client.db('sqill');
+  collection = db.collection('careertracks');
+});
+
+
 require('./../services/thumbnailworker')
 
 let queue = kue.createQueue({
@@ -48,7 +60,8 @@ exports.addCareerTrack = function(req, res, next){
         return res.status(422).json({error: "Growth is required"})
     if(!superquiz)
         return res.status(422).json({error: "Superquiz id is required"})
-    let career_track = new CareerTrack({
+
+    collection.insertOne({
         name: name,
         image: image,
         salary: salary,
@@ -59,10 +72,11 @@ exports.addCareerTrack = function(req, res, next){
         superquiz: superquiz,
         modules: modules,
         companies: companies
-    })
-    career_track.save(function(err, career_track){
+    }, function(err, result){
         if(err)
             return next(err)
+
+        const career_track = result.ops[0];
 
         const thumbnailJob = queue.create('thumbnail', {
               name: 'CareerTrack',
@@ -104,38 +118,22 @@ exports.deleteCareerTrack = function(req, res, next){
 }
 
 exports.editCareerTrack = function(req, res, next){
-    const _id = req.body._id
-    CareerTrack.findOne({_id: _id}, function(err, career_track){
+    var objForUpdate = {};
+    if(req.body.name)objForUpdate.name = req.body.name
+    if(req.body.image)objForUpdate.image = req.body.image
+    if(req.body.salary)objForUpdate.salary = req.body.salary
+    if(req.body.job_count)objForUpdate.job_count = req.body.job_count
+    if(req.body.about)objForUpdate.about = req.body.about
+    if(req.body.category)objForUpdate.category = req.body.category
+    if(req.body.growth)objForUpdate.growth = req.body.growth
+    if(req.body.superquiz)objForUpdate.superquiz = req.body.superquiz
+    if(req.body.modules)objForUpdate.modules = req.body.modules
+    if(req.body.companies)objForUpdate.companies = req.body.companies
+    objForUpdate = { $set: objForUpdate }
+    collection.findOneAndUpdate({ _id:ObjectID(req.body._id) }, objForUpdate, { returnOriginal: false }, function(err, result){
         if(err)
             return next(err)
-        if(!career_track)
-            return res.status(422).send({error: "No career_track exists with the provided _id!"})
-        const name = req.body.name
-        const image = req.body.image
-        const salary = req.body.salary
-        const job_count = req.body.job_count
-        const about = req.body.about
-        const category = req.body.category
-        const growth = req.body.growth
-        const superquiz = req.body.superquiz
-        const modules = req.body.modules
-        const companies = req.body.companies
-        if(name)career_track.name = name
-        if(image)career_track.image = image
-        if(salary)career_track.salary = salary
-        if(job_count)career_track.job_count = job_count
-        if(about)career_track.about = about
-        if(category)career_track.category = category
-        if(growth)career_track.growth = growth
-        if(superquiz)career_track.superquiz = superquiz
-        if(modules)career_track.modules = modules
-        if(companies)career_track.companies = companies
-        career_track.save(function(err, career_track){
-            if(err)
-                return next(err)
-            res.status(200).json(career_track)
-        })
-
+        res.status(200).json(result.value)
     })
 }
 
