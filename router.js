@@ -274,12 +274,6 @@ module.exports = function(app) {
   // Get all scores route
   scoreRoutes.get('/', ScoreController.getScores)
 
-  // Create score route
-  scoreRoutes.post('/', ScoreController.createScore)
-
-  // Add score route
-  scoreRoutes.patch('/', ScoreController.addScore)
-
   // Delete scores route
   scoreRoutes.delete('/', ScoreController.deleteScores)
 
@@ -323,7 +317,7 @@ module.exports = function(app) {
 
   //============================================== Super Quiz Routes =============================================//
   // Set superquiz routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/superquiz', superquizRoutes)
+  apiRoutes.use('/superquiz', requireAuth, superquizRoutes)
 
   // Get all superquiz route
   superquizRoutes.get('/', SuperQuizController.getSuperQuizzes)

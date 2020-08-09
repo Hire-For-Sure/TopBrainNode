@@ -105,28 +105,57 @@ exports.editSuperQuiz = function(req, res, next){
 }
 
 exports.calcScore = function(req, res, next){
+    const user = req.user._id
     const _id = req.body._id
     const submitted_quiz = req.body.submitted_quiz
     var result = []
+    var userScore = []
     SuperQuiz.findOne({_id: _id})
     .populate({path: "sections.section"})
     .exec(function(err, superquiz){
         if(err)
-        return next(err)
+            return next(err)
         if(!superquiz)
-        return res.status(422).send({error: "No SuperQuiz exists with the provided _id!"})
+            return res.status(422).send({error: "No SuperQuiz exists with the provided _id!"})
         let sections = superquiz.sections
         sections.forEach(function(item){
             var score = 0
             var maxScore = 0
-            let submitted_response = submitted_quiz.find(o => o.section_id === item.section._id ).response
-            let questions = _.intersectionWith(item.section.questions, submitted_response, (o1, o2) => o1._id === o2.question_id)
+            let submitted_response = submitted_quiz.find(o => o.section_id == item.section._id ).response
+            let questions = _.intersectionWith(item.section.questions, submitted_response, (o1, o2) => o1._id == o2.question_id)
             questions.forEach(function(question){
-                let submitted_question = submitted_response.find(o => o.question_id === question._id)
-                if(submitted_question.answer === question.answer) score += 1
+                let submitted_question = submitted_response.find(o => o.question_id == question._id)
+                if(submitted_question.answer == question.answer) score += 1
             })
-            result.push({section_id: item.section._id, score: score, maxScore: questions.length})
+            result.push({section: item.section._id, score: score, maxScore: questions.length})
+            userScore.push({section: item.section._id, score: score})
         })
+
+        Score.findOne({user: user}, function(err, score){
+            if(err) return next(err)
+            if(!score){
+                let newScore = new Score({
+                    user: user,
+                    scores: [{superquiz: _id, section_score: userScore}]
+                })
+                newScore.save(function(err, newScore){
+                    if(err)
+                        console.log(err)
+                    else console.log("Score for the user created")
+                })
+            }else {
+                const idx = score.scores.findIndex(o => o.superquiz == _id)
+                idx === -1 ?
+                    score.scores.push({superquiz: _id, section_score: userScore})
+                    :score.scores[idx] = {superquiz: _id, section_score: userScore}
+                score.save(function(err, score){
+                    if(err)
+                        return next(err)
+                    console.log("Score added to the user")
+                })
+            }
+        })
+
         async function foo(){
             const ans = await calcPercentile(_id, result)
             return res.status(200).json({
