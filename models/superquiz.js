@@ -12,7 +12,11 @@ const SuperQuizSchema = new Schema({
       _id: false,
       section: {type: Schema.Types.ObjectId, ref: Section},
       count: {type: Number, required: true}
-    }]
+  }],
+  scoresTable: [{
+      _id: false,
+      type: Number
+  }]
 })
 
 module.exports = mongoose.model('SuperQuiz', SuperQuizSchema)

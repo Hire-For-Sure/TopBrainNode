@@ -13,28 +13,13 @@ function shuffle(array) {
     return array
 }
 
-async function calcPercentile(superquiz, user_scores) {
-    let other_scores = []
-    let percentile = 0
-    let user_score = user_scores.map(item => item.score).reduce((prev, next) => prev + next)
-    await Score.find({'scores.superquiz': superquiz}, {'scores.$': 1}, function(err, s){
-        s.forEach(sc => {
-            let arr = sc.scores[0].section_score
-            const result = arr.map(item => item.score).reduce((prev, next) => prev + next)
-            other_scores.push(result)
-        })
-        percentile = (100 * other_scores.reduce((acc, v) => acc + (v < user_score ? 1 : 0) + (v === user_score ? 0.5 : 0), 0)) / other_scores.length
-    })
-    return {other_scores: other_scores, percentile: percentile}
-}
-
 exports.getSuperQuizzes = function(req, res, next) {
     SuperQuiz.find({...req.query})
     .populate({path: "sections.section", populate: {path: "relevant_content", model: "Module"}})
     .exec(function(err, superquizzes){
         if (err)
         return next(err)
-        superquizzes.forEach(superquiz => {
+        superquizzes.forEach(function(superquiz, index){
             let sections = superquiz.sections
             sections.forEach(function(item, index){
                 let questions = shuffle(item.section.questions).slice(0, item.count)
@@ -45,7 +30,8 @@ exports.getSuperQuizzes = function(req, res, next) {
                 new_item.section.questions = questions
                 this[index] = new_item
             }, sections)
-        })
+            this[index] = _.pick(superquiz, ['_id', 'title', 'sections'])
+        }, superquizzes)
         return res.status(200).json(superquizzes)
     })
 }
@@ -53,11 +39,14 @@ exports.getSuperQuizzes = function(req, res, next) {
 exports.addSuperQuiz = function(req, res, next){
     const title = req.body.title
     const sections = req.body.sections
+    let len = sections.map(item => item.count).reduce((prev, next) => prev + next) + 1
+    let scoresTable = new Array(len).fill(0)
     if(!title)
-    return res.status(422).json({"error": "Title is required"})
+        return res.status(422).json({"error": "Title is required"})
     let superquiz = new SuperQuiz({
         title: title,
-        sections: sections
+        sections: sections,
+        scoresTable: scoresTable
     })
     superquiz.save(function(err, superquiz){
         if(err)
@@ -90,17 +79,20 @@ exports.editSuperQuiz = function(req, res, next){
     const _id = req.body._id
     SuperQuiz.findOne({_id: _id}, function(err, superquiz){
         if(err)
-        return next(err)
+            return next(err)
         if(!superquiz)
-        return res.status(422).send({error: "No superquiz exists with the provided _id!"})
+            return res.status(422).send({error: "No superquiz exists with the provided _id!"})
         const sections = req.body.sections
-        if(sections)superquiz.sections = sections
+        if(sections){
+            superquiz.sections = sections
+            let len = sections.map(item => item.count).reduce((prev, next) => prev + next)
+            superquiz.scoresTable = new Array(len).fill(0)
+        }
         superquiz.save(function(err, superquiz){
             if(err)
-            return next(err)
+                return next(err)
             res.status(200).json(superquiz)
         })
-
     })
 }
 
@@ -109,7 +101,8 @@ exports.calcScore = function(req, res, next){
     const _id = req.body._id
     const submitted_quiz = req.body.submitted_quiz
     var result = []
-    var userScore = []
+    let other_scores = [0]
+    let user_score = 0
     SuperQuiz.findOne({_id: _id})
     .populate({path: "sections.section"})
     .exec(function(err, superquiz){
@@ -128,7 +121,6 @@ exports.calcScore = function(req, res, next){
                 if(submitted_question.answer == question.answer) score += 1
             })
             result.push({section: item.section._id, score: score, maxScore: questions.length})
-            userScore.push({section: item.section._id, score: score})
         })
 
         Score.findOne({user: user}, function(err, score){
@@ -136,7 +128,7 @@ exports.calcScore = function(req, res, next){
             if(!score){
                 let newScore = new Score({
                     user: user,
-                    scores: [{superquiz: _id, section_score: userScore}]
+                    scores: [{superquiz: _id, section_score: result}]
                 })
                 newScore.save(function(err, newScore){
                     if(err)
@@ -146,8 +138,8 @@ exports.calcScore = function(req, res, next){
             }else {
                 const idx = score.scores.findIndex(o => o.superquiz == _id)
                 idx === -1 ?
-                    score.scores.push({superquiz: _id, section_score: userScore})
-                    :score.scores[idx] = {superquiz: _id, section_score: userScore}
+                    score.scores.push({superquiz: _id, section_score: result})
+                    :score.scores[idx] = {superquiz: _id, section_score: result}
                 score.save(function(err, score){
                     if(err)
                         return next(err)
@@ -155,15 +147,20 @@ exports.calcScore = function(req, res, next){
                 })
             }
         })
-
-        async function foo(){
-            const ans = await calcPercentile(_id, result)
+        user_score = result.map(item => item.score).reduce((prev, next) => prev + next)
+        superquiz.scoresTable.forEach((val, index) => {
+            while(val--)
+                other_scores.push(index)
+        })
+        let percentile = (100 * other_scores.reduce((acc, v) => acc + (v < user_score ? 1 : 0) + (v === user_score ? 0.5 : 0), 0)) / other_scores.length
+        superquiz.scoresTable.set(user_score, superquiz.scoresTable[user_score]+1)
+        superquiz.save(function(err, doc){
+            if(err)
+                return next(err)
             return res.status(200).json({
                 result: result,
-                percentile: ans.percentile,
-                other_scores: ans.other_scores
+                percentile: percentile
             })
-        }
-        foo()
+        })
     })
 }
