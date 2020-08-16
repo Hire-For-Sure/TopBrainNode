@@ -16,7 +16,7 @@ function shuffle(array) {
 
 exports.getSuperQuizzes = function(req, res, next) {
     SuperQuiz.find({...req.query})
-    .populate({path: "sections.section", populate: {path: "relevant_content", model: "Module"}})
+    .populate({path: "sections.section"})
     .exec(function(err, superquizzes){
         if (err)
         return next(err)
