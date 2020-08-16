@@ -14,7 +14,8 @@ const ScoreSchema = new Schema({
             section: {type: Schema.Types.ObjectId, ref: Section},
             score: {type: Number, required: true},
             maxScore: {type: Number}
-        }]
+        }],
+        createdAt: {type: Date, default: Date.now()}
     }]
 })
 

@@ -3,7 +3,8 @@
 const SuperQuiz = require('./../models/superquiz'),
 Question = require('./../models/section').Question,
 Score = require('./../models/score'),
-_ = require('lodash')
+_ = require('lodash'),
+moment = require('moment-timezone')
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -120,7 +121,7 @@ exports.calcScore = function(req, res, next){
                 let submitted_question = submitted_response.find(o => o.question_id == question._id)
                 if(submitted_question.answer == question.answer) score += 1
             })
-            result.push({section: item.section._id, score: score, maxScore: questions.length})
+            result.push({section: {_id: item.section._id, title: item.section.title, description: item.section.description, relevant_content: item.section.relevant_content}, score: score, maxScore: questions.length})
         })
 
         Score.findOne({user: user}, function(err, score){
@@ -136,10 +137,7 @@ exports.calcScore = function(req, res, next){
                     else console.log("Score for the user created")
                 })
             }else {
-                const idx = score.scores.findIndex(o => o.superquiz == _id)
-                idx === -1 ?
-                    score.scores.push({superquiz: _id, section_score: result})
-                    :score.scores[idx] = {superquiz: _id, section_score: result}
+                score.scores.push({superquiz: _id, section_score: result})
                 score.save(function(err, score){
                     if(err)
                         return next(err)
@@ -157,9 +155,17 @@ exports.calcScore = function(req, res, next){
         superquiz.save(function(err, doc){
             if(err)
                 return next(err)
-            return res.status(200).json({
-                result: result,
-                percentile: percentile
+            Score.findOne({user: user}, function(err, score){
+                if(err)
+                    console.log(err)
+                var sc = score.toObject()
+                var sco = sc.scores.pop()
+                sco.section_score = result
+                sco.createdAt = moment.tz(sco.createdAt, 'Asia/Colombo').format('MMMM DD, YYYY, hh:mm:ss A')
+                sco.percentile = percentile
+                sco.superquiz = {_id: _id, title: superquiz.title}
+                sc.scores = [sco]
+                return res.status(200).json(sc)
             })
         })
     })
