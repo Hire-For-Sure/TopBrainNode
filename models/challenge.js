@@ -20,8 +20,7 @@ const ChallengeSchema = new Schema({
         validate: {
             validator: validator.urlValidator,
             message: props => `${props.value} is not a valid URL!`
-        },
-        required: true
+        }
     },
     points: {
         type: Number,
