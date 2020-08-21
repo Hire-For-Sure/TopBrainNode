@@ -66,8 +66,8 @@ exports.editChallenge = function(req, res, next){
         const points = req.body.points
         if(name)challenge.name = name
         if(link)challenge.link = link
-        if(fileUrl)challenge.link = fileUrl
-        if(typeof points === Number)challenge.points = points
+        if(fileUrl)challenge.fileUrl = fileUrl
+        if(points)challenge.points = points
         challenge.save(function(err, challenge){
             if(err)
                 return next(err)
