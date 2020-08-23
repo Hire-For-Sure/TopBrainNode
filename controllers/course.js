@@ -15,9 +15,11 @@ exports.addCourse = function(req, res, next){
     const link = req.body.link
     const objectives = req.body.objectives
     if(!name)
-        return res.status(422).json({"error": "Name is required"})
+        return res.status(422).json({error: "Name is required"})
     if(!link)
-        return res.status(422).json({"error": "Link is required"})
+        return res.status(422).json({error: "Link is required"})
+    if(!objectives)
+        objectives = []
     let course = new Course({
         name: name,
         link: link,
