@@ -52,10 +52,12 @@ exports.getAdminSuperQuizzes = function(req, res, next) {
 exports.addSuperQuiz = function(req, res, next){
     const title = req.body.title
     const sections = req.body.sections
+    if(!title)
+        return res.status(422).json({"error": "Title is required"})
+    if(!sections)
+        return res.status(422).json({"error": "Sections and Count is required"})
     let len = sections.map(item => item.count).reduce((prev, next) => prev + next) + 1
     let scoresTable = new Array(len).fill(0)
-    if(!title)
-    return res.status(422).json({"error": "Title is required"})
     let superquiz = new SuperQuiz({
         title: title,
         sections: sections,
