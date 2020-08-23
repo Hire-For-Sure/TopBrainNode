@@ -17,6 +17,14 @@ exports.getSections = function(req, res, next){
     })
 }
 
+exports.getAdminSections = function(req, res, next){
+    Section.find({...req.query}, function(err, sections){
+        if(err)
+            return next(err)
+        return res.status(200).json(sections)
+    })
+}
+
 exports.addSection = function(req, res, next){
     const title = req.body.title
     const description = req.body.description
@@ -75,7 +83,7 @@ exports.editSection = function(req, res, next){
         const questions = req.body.questions
         if(title)section.title = title
         if(description)section.description = description
-        if(difficulty)section.relevant_content = relevant_content
+        if(relevant_content)section.relevant_content = relevant_content
         if(questions)section.questions = questions
         section.save(function(err, section){
             if(err)

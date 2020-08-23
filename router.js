@@ -301,7 +301,10 @@ module.exports = function(app) {
   apiRoutes.use('/section', sectionRoutes)
 
   // Get all sections route
-  sectionRoutes.get('/', SectionController.getSections)
+  sectionRoutes.get('/get', SectionController.getSections)
+
+  // Get all sections route ADMIN
+  sectionRoutes.get('/', SectionController.getAdminSections)
 
   // Create section route
   sectionRoutes.post('/', SectionController.addSection)
@@ -320,7 +323,10 @@ module.exports = function(app) {
   apiRoutes.use('/superquiz', requireAuth, superquizRoutes)
 
   // Get all superquiz route
-  superquizRoutes.get('/', SuperQuizController.getSuperQuizzes)
+  superquizRoutes.get('/get', SuperQuizController.getSuperQuizzes)
+
+  // Get all superquiz route ADMIN
+  superquizRoutes.get('/', SuperQuizController.getAdminSuperQuizzes)
 
   // Create superquiz route
   superquizRoutes.post('/', SuperQuizController.addSuperQuiz)
