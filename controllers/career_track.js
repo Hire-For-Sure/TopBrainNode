@@ -60,6 +60,10 @@ exports.addCareerTrack = function(req, res, next){
         return res.status(422).json({error: "Growth is required"})
     if(!superquiz)
         return res.status(422).json({error: "Superquiz id is required"})
+    if(!modules)
+        modules = []
+    if(!companies)
+        companies = []
 
     collection.insertOne({
         name: name,
