@@ -29,6 +29,11 @@ exports.getCareerTracks = function(req, res, next) {
     CareerTrack.find({...req.query}, function(err, career_tracks){
         if (err)
             return next(err)
+        career_tracks.forEach(function(item, index){
+            item = item.toObject()
+            item.growth = item.growth.toString()
+            this[index] = item
+        }, career_tracks)
         return res.status(200).json(career_tracks)
     })
 }
@@ -42,8 +47,8 @@ exports.addCareerTrack = function(req, res, next){
     const category = req.body.category
     const growth = req.body.growth
     const superquiz = req.body.superquiz
-    const modules = req.body.modules
-    const companies = req.body.companies
+    var modules = req.body.modules
+    var companies = req.body.companies
     if(!name)
         return res.status(422).json({error: "Name is required"})
     if(!image)

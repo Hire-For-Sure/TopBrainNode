@@ -13,7 +13,7 @@ exports.getBlogs = function(req, res, next) {
 exports.addBlog = function(req, res, next){
     const name = req.body.name
     const link = req.body.link
-    const objectives = req.body.objectives
+    var objectives = req.body.objectives
     if(!name)
         return res.status(422).json({error: "Name is required"})
     if(!link)
