@@ -51,6 +51,10 @@ exports.register = function(req, res, next) {
     // Return error if no password provided
     if (!password) {
         return res.status(422).send({ error: 'You must enter a password.' })
+    } else {
+        var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$")
+        if(!strongRegex.test(password))
+            return res.status(422).send({ error: 'Your password must have atleast 8 charactes and include lowercase, uppercase, number and special character(@ $ ! % * ? &).' })
     }
 
     let user = new User({

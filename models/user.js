@@ -88,6 +88,7 @@ const TechExprienceSchema = new Schema({
 
 // User Schema
 const UserSchema = new Schema({
+    isAdmin: {type: Boolean, default: false},
     profile: ProfileSchema,
     personalInfo: PersonalSchema,
     password: {

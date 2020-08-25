@@ -15,6 +15,7 @@ const AuthenticationController = require('./controllers/authentication'),
       JobController = require('./controllers/job'),
       SectionController = require('./controllers/section'),
       SuperQuizController = require('./controllers/superquiz'),
+      User = require('./models/user'),
       express = require('express'),
       passportService = require('./config/passport'),
       passport = require('passport'),
@@ -31,6 +32,20 @@ const requireLogin = function(req, res, next) {
     		next()
 	    }
 	})(req, res, next)
+}
+const requireAdmin = function(req, res, next) {
+  User.findById(req.user._id, function(err, user) {
+    if (err) {
+      res.status(422).json({ error: 'No user was found.' })
+      return next(err)
+    }
+    // If user is found, check role.
+    if (user.isAdmin === true) {
+      return next()
+    }
+    res.status(401).json({ error: 'You are not authorized to access this.' })
+    return next('Unauthorized')
+  })
 }
 
 const singleUpload = upload.single('image'),
@@ -112,87 +127,87 @@ module.exports = function(app) {
   //===================================================== Blog Routes ==================================================//
 
   // Set blog routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/blog', blogRoutes)
+  apiRoutes.use('/blog', requireAuth, blogRoutes)
 
   // Get all blogs route
   blogRoutes.get('/', BlogController.getBlogs)
 
   // Create blog route
-  blogRoutes.post('/', BlogController.addBlog)
+  blogRoutes.post('/', requireAdmin, BlogController.addBlog)
 
   // Delete blog route
-  blogRoutes.delete('/', BlogController.deleteBlog)
+  blogRoutes.delete('/', requireAdmin, BlogController.deleteBlog)
 
   // Update blog route
-  blogRoutes.patch('/', BlogController.editBlog)
+  blogRoutes.patch('/', requireAdmin, BlogController.editBlog)
 
   //============================================== Challenge Routes ==============================================//
 
   // Set challenge routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/challenge', challengeRoutes)
+  apiRoutes.use('/challenge', requireAuth, challengeRoutes)
 
   // Get all challenge route
   challengeRoutes.get('/', ChallengeController.getChallenges)
 
   // Create challenge route
-  challengeRoutes.post('/', ChallengeController.addChallenge)
+  challengeRoutes.post('/', requireAdmin, ChallengeController.addChallenge)
 
   // Delete challenge route
-  challengeRoutes.delete('/', ChallengeController.deleteChallenge)
+  challengeRoutes.delete('/', requireAdmin, ChallengeController.deleteChallenge)
 
   // Update challenge route
-  challengeRoutes.patch('/', ChallengeController.editChallenge)
+  challengeRoutes.patch('/', requireAdmin, ChallengeController.editChallenge)
 
   //=============================================== Company Routes ==============================================//
 
   // Set company routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/company', companyRoutes)
+  apiRoutes.use('/company', requireAuth, companyRoutes)
 
   // Get all company route
   companyRoutes.get('/', CompanyController.getCompanies)
 
   // Create company route
-  companyRoutes.post('/', CompanyController.addCompany)
+  companyRoutes.post('/', requireAdmin, CompanyController.addCompany)
 
   // Delete company route
-  companyRoutes.delete('/', CompanyController.deleteCompany)
+  companyRoutes.delete('/', requireAdmin, CompanyController.deleteCompany)
 
   // Update company route
-  companyRoutes.patch('/', CompanyController.editCompany)
+  companyRoutes.patch('/', requireAdmin, CompanyController.editCompany)
 
   //============================================== Course Routes ================================================//
 
   // Set course routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/course', courseRoutes)
+  apiRoutes.use('/course', requireAuth, courseRoutes)
 
   // Get all course route
   courseRoutes.get('/', CourseController.getCourses)
 
   // Create course route
-  courseRoutes.post('/', CourseController.addCourse)
+  courseRoutes.post('/', requireAdmin, CourseController.addCourse)
 
   // Delete course route
-  courseRoutes.delete('/', CourseController.deleteCourse)
+  courseRoutes.delete('/', requireAdmin, CourseController.deleteCourse)
 
   // Update course route
-  courseRoutes.patch('/', CourseController.editCourse)
+  courseRoutes.patch('/', requireAdmin, CourseController.editCourse)
 
   //================================================ Module Routes ================================================//
 
   // Set module routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/module', moduleRoutes)
+  apiRoutes.use('/module', requireAuth, moduleRoutes)
 
   // Get all modules route
   moduleRoutes.get('/', ModuleController.getModules)
 
   // Create modules route
-  moduleRoutes.post('/', ModuleController.addModule)
+  moduleRoutes.post('/', requireAdmin, ModuleController.addModule)
 
   // Delete modules route
-  moduleRoutes.delete('/', ModuleController.deleteModule)
+  moduleRoutes.delete('/', requireAdmin, ModuleController.deleteModule)
 
   // Update modules route
-  moduleRoutes.patch('/', ModuleController.editModule)
+  moduleRoutes.patch('/', requireAdmin, ModuleController.editModule)
 
   // Fetch all tags route
   moduleRoutes.get('/tags', ModuleController.getTags)
@@ -200,19 +215,19 @@ module.exports = function(app) {
   //============================================== Career Track Routes =============================================//
 
   // Set career-track routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/career-track', careerTrackRoutes)
+  apiRoutes.use('/career-track', requireAuth, careerTrackRoutes)
 
   // Get all career tracks route
   careerTrackRoutes.get('/', CareerTrackController.getCareerTracks)
 
   // Create career track route
-  careerTrackRoutes.post('/', CareerTrackController.addCareerTrack)
+  careerTrackRoutes.post('/', requireAdmin, CareerTrackController.addCareerTrack)
 
   // Delete career track route
-  careerTrackRoutes.delete('/', CareerTrackController.deleteCareerTrack)
+  careerTrackRoutes.delete('/', requireAdmin, CareerTrackController.deleteCareerTrack)
 
   // Update career track route
-  careerTrackRoutes.patch('/', CareerTrackController.editCareerTrack)
+  careerTrackRoutes.patch('/', requireAdmin, CareerTrackController.editCareerTrack)
 
   // Fetch all categories route
   careerTrackRoutes.get('/categories', CareerTrackController.getCategories)
@@ -243,26 +258,26 @@ module.exports = function(app) {
   completedModuleRoutes.post('/', CompletedModuleController.addCompletedModule)
 
   // Mark as complete route
-  completedModuleRoutes.post('/mark/', CompletedModuleController.markAsComplete)
+  completedModuleRoutes.post('/mark', CompletedModuleController.markAsComplete)
 
   //============================================== Quiz Routes =============================================//
   // Set quiz routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/quiz', quizRoutes)
+  apiRoutes.use('/quiz', requireAuth, quizRoutes)
 
   // Get all quiz route
   quizRoutes.get('/', QuizController.getQuizzes)
 
   // Create quiz route
-  quizRoutes.post('/', QuizController.addQuiz)
+  quizRoutes.post('/', requireAdmin, QuizController.addQuiz)
 
   // Delete quiz route
-  quizRoutes.delete('/', QuizController.deleteQuiz)
+  quizRoutes.delete('/', requireAdmin, QuizController.deleteQuiz)
 
   // Update quiz route
-  quizRoutes.patch('/', QuizController.editQuiz)
+  quizRoutes.patch('/', requireAdmin, QuizController.editQuiz)
 
   // Add question route
-  quizRoutes.patch('/addQuestion', QuizController.addQuestion)
+  quizRoutes.patch('/addQuestion', requireAdmin, QuizController.addQuestion)
 
   // Add calculate score route
   quizRoutes.post('/calcScore', QuizController.calcScore)
@@ -275,48 +290,48 @@ module.exports = function(app) {
   scoreRoutes.get('/', ScoreController.getScores)
 
   // Delete scores route
-  scoreRoutes.delete('/', ScoreController.deleteScores)
+  scoreRoutes.delete('/', requireAdmin, ScoreController.deleteScores)
 
   //============================================== Job Routes =============================================//
   // Set job routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/job', jobRoutes)
+  apiRoutes.use('/job', requireAuth, jobRoutes)
 
   // Get all jobs route
   jobRoutes.get('/', JobController.getJobs)
 
   // Create job route
-  jobRoutes.post('/', JobController.addJob)
+  jobRoutes.post('/', requireAdmin, JobController.addJob)
 
-  // Add job route
-  jobRoutes.patch('/', JobController.editJob)
+  // Edit job route
+  jobRoutes.patch('/', requireAdmin, JobController.editJob)
 
   // Delete job route
-  jobRoutes.delete('/', JobController.deleteJob)
+  jobRoutes.delete('/', requireAdmin, JobController.deleteJob)
 
   // Send a response route
-  jobRoutes.patch('/', JobController.addResponse)
+  jobRoutes.patch('/response', JobController.addResponse)
 
   //============================================== Section Routes =============================================//
   // Set section routes as subgroup/middleware to apiRoutes
-  apiRoutes.use('/section', sectionRoutes)
+  apiRoutes.use('/section', requireAuth, sectionRoutes)
 
   // Get all sections route
   sectionRoutes.get('/get', SectionController.getSections)
 
   // Get all sections route ADMIN
-  sectionRoutes.get('/', SectionController.getAdminSections)
+  sectionRoutes.get('/', requireAdmin, SectionController.getAdminSections)
 
   // Create section route
-  sectionRoutes.post('/', SectionController.addSection)
+  sectionRoutes.post('/', requireAdmin, SectionController.addSection)
 
   // Delete section route
-  sectionRoutes.delete('/', SectionController.deleteSection)
+  sectionRoutes.delete('/', requireAdmin, SectionController.deleteSection)
 
   // Update section route
-  sectionRoutes.patch('/', SectionController.editSection)
+  sectionRoutes.patch('/', requireAdmin, SectionController.editSection)
 
   // Add section route
-  sectionRoutes.patch('/addQuestion', SectionController.addQuestion)
+  sectionRoutes.patch('/addQuestion', requireAdmin, SectionController.addQuestion)
 
   //============================================== Super Quiz Routes =============================================//
   // Set superquiz routes as subgroup/middleware to apiRoutes
@@ -326,16 +341,16 @@ module.exports = function(app) {
   superquizRoutes.get('/get', SuperQuizController.getSuperQuizzes)
 
   // Get all superquiz route ADMIN
-  superquizRoutes.get('/', SuperQuizController.getAdminSuperQuizzes)
+  superquizRoutes.get('/', requireAdmin, SuperQuizController.getAdminSuperQuizzes)
 
   // Create superquiz route
-  superquizRoutes.post('/', SuperQuizController.addSuperQuiz)
+  superquizRoutes.post('/', requireAdmin, SuperQuizController.addSuperQuiz)
 
   // Delete superquiz route
-  superquizRoutes.delete('/', SuperQuizController.deleteSuperQuiz)
+  superquizRoutes.delete('/', requireAdmin, SuperQuizController.deleteSuperQuiz)
 
   // Update superquiz route
-  superquizRoutes.patch('/', SuperQuizController.editSuperQuiz)
+  superquizRoutes.patch('/', requireAdmin, SuperQuizController.editSuperQuiz)
 
   // Calculate superquiz score route
   superquizRoutes.post('/calcScore', SuperQuizController.calcScore)
