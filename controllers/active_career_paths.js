@@ -7,8 +7,9 @@ exports.getCareerPaths = function(req, res, next){
     ActiveCareerPath.find({
         user: user
     }, function(err, active_career_paths){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         return res.status(200).json(active_career_paths)
     })
 }
@@ -22,8 +23,9 @@ exports.addCareerPath = function(req, res, next){
         career_track: career_track_id
     })
     active_career_path.save(function(err, active_career_path){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         res.status(201).json(active_career_path)
     })
 }
@@ -34,8 +36,9 @@ exports.deleteCareerPath = function(req, res, next){
         career_track: career_track_id,
         user: req.user._id
     }, function(err, active_career_path){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         return res.status(200).json({
             status: "SUCCESS"
         })

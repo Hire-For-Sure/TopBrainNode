@@ -15,8 +15,9 @@ let queue = kue.createQueue({
 
 exports.getModules = function(req, res, next){
     Module.find({...req.query}, function(err, modules){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         return res.status(200).json(modules)
     })
 }
@@ -53,8 +54,9 @@ exports.addModule = function(req, res, next){
         tags: tags
     })
     module.save(function(err, module){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
 
         const thumbnailJob = queue.create('thumbnail', {
               name: 'Module',
@@ -83,7 +85,9 @@ exports.deleteModule = function(req, res, next){
     Module.findOneAndDelete({
         _id: _id
     }, function(err, module){
-        if(err)return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!module){
             return res.status(422).send({
                 error: "No Module exists with the provided _id!"
@@ -98,8 +102,9 @@ exports.deleteModule = function(req, res, next){
 exports.editModule = function(req, res, next){
     const _id = req.body._id
     Module.findOne({_id: _id}, function(err, module){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!module)
             return res.status(422).send({error: "No module exists with the provided _id!"})
         const name = req.body.name
@@ -117,8 +122,9 @@ exports.editModule = function(req, res, next){
         if(blogs)module.blogs = blogs
         if(tags)module.tags = tags
         module.save(function(err, module){
-            if(err)
-                return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
             return res.status(200).json(module)
         })
     })

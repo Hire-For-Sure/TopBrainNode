@@ -27,8 +27,9 @@ let queue = kue.createQueue({
 
 exports.getCareerTracks = function(req, res, next) {
     CareerTrack.find({...req.query}, function(err, career_tracks){
-        if (err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         career_tracks.forEach(function(item, index){
             item = item.toObject()
             item.growth = item.growth.toString()
@@ -82,8 +83,9 @@ exports.addCareerTrack = function(req, res, next){
         modules: modules,
         companies: companies
     }, function(err, result){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
 
         const career_track = result.ops[0];
 
@@ -114,7 +116,9 @@ exports.deleteCareerTrack = function(req, res, next){
     CareerTrack.findOneAndDelete({
         _id: _id
     }, function(err, career_track){
-        if(err){return next(err)}
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!career_track){
             return res.status(422).send({
                 error: "No career_track exists with the provided _id!"
@@ -140,8 +144,9 @@ exports.editCareerTrack = function(req, res, next){
     if(req.body.companies)objForUpdate.companies = req.body.companies
     objForUpdate = { $set: objForUpdate }
     collection.findOneAndUpdate({ _id:ObjectID(req.body._id) }, objForUpdate, { returnOriginal: false }, function(err, result){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         res.status(200).json(result.value)
     })
 }

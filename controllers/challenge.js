@@ -4,8 +4,9 @@ const Challenge = require('./../models/challenge')
 
 exports.getChallenges = function(req, res, next) {
     Challenge.find({...req.query}, function(err, challenges){
-        if (err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         return res.status(200).json(challenges)
     })
 }
@@ -30,8 +31,9 @@ exports.addChallenge = function(req, res, next){
         points: points
     })
     challenge.save(function(err, challenge){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         return res.status(201).json(challenge)
     })
 }
@@ -41,7 +43,9 @@ exports.deleteChallenge = function(req, res, next){
     Challenge.findOneAndDelete({
         _id: _id
     }, function(err, challenge){
-        if(err){return next(err)}
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!challenge){
             return res.status(422).send({
                 error: "No challenge exists with the provided _id!"
@@ -56,8 +60,9 @@ exports.deleteChallenge = function(req, res, next){
 exports.editChallenge = function(req, res, next){
     const _id = req.body._id
     Challenge.findOne({_id: _id}, function(err, challenge){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!challenge)
             return res.status(422).send({error: "No challenge exists with the provided _id!"})
         const name = req.body.name
@@ -69,8 +74,9 @@ exports.editChallenge = function(req, res, next){
         if(fileUrl)challenge.fileUrl = fileUrl
         if(points)challenge.points = points
         challenge.save(function(err, challenge){
-            if(err)
-                return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
             res.status(200).json(challenge)
         })
 

@@ -11,8 +11,9 @@ exports.getScores = function(req, res, next){
     .populate({path:'scores.superquiz', select: 'title'})
     .populate({path: 'scores.section_score.section', select: ['title', 'description', 'relevant_content']})
     .exec(async function(err, score){
-        if(err)
-        return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!score){
             return res.status(422).send({
                 error: "No Score exists with the provided user _id!"
@@ -44,7 +45,9 @@ exports.deleteScores = function(req, res, next){
     Score.findOneAndDelete({
         user: user
     }, function(err, score){
-        if(err)return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!score){
             return res.status(422).send({
                 error: "No Score exists with the provided _id!"

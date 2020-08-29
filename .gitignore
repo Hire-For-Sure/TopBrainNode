@@ -8,3 +8,5 @@ dump.rdb
 redis-stable/
 server.cert
 server.key
+
+*.jpg

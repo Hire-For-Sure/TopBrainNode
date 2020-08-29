@@ -18,8 +18,9 @@ exports.getSuperQuizzes = function(req, res, next) {
     SuperQuiz.findOne({...req.query})
     .populate({path: "sections.section"})
     .exec(function(err, superquiz){
-        if (err)
-        return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
 
         let sections = superquiz.sections
         sections.forEach(function(item, index){
@@ -40,8 +41,9 @@ exports.getSuperQuizzes = function(req, res, next) {
 exports.getAdminSuperQuizzes = function(req, res, next) {
     SuperQuiz.find({...req.query})
     .exec(function(err, superquizzes){
-        if (err)
-        return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         superquizzes.forEach(function(superquiz, index){
             this[index] = _.pick(superquiz, ['_id', 'title', 'sections'])
         }, superquizzes)
@@ -64,8 +66,9 @@ exports.addSuperQuiz = function(req, res, next){
         scoresTable: scoresTable
     })
     superquiz.save(function(err, superquiz){
-        if(err)
-        return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
 
         res.status(201).json({
             _id: superquiz._id
@@ -78,7 +81,9 @@ exports.deleteSuperQuiz = function(req, res, next){
     SuperQuiz.findOneAndDelete({
         _id: _id
     }, function(err, superquiz){
-        if(err){return next(err)}
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!superquiz){
             return res.status(422).send({
                 error: "No superquiz exists with the provided _id!"
@@ -93,8 +98,9 @@ exports.deleteSuperQuiz = function(req, res, next){
 exports.editSuperQuiz = function(req, res, next){
     const _id = req.body._id
     SuperQuiz.findOne({_id: _id}, function(err, superquiz){
-        if(err)
-        return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!superquiz)
         return res.status(422).send({error: "No superquiz exists with the provided _id!"})
         const sections = req.body.sections
@@ -104,8 +110,9 @@ exports.editSuperQuiz = function(req, res, next){
             superquiz.scoresTable = new Array(len).fill(0)
         }
         superquiz.save(function(err, superquiz){
-            if(err)
-            return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
             res.status(200).json(superquiz)
         })
     })
@@ -121,8 +128,9 @@ exports.calcScore = function(req, res, next){
     SuperQuiz.findOne({_id: _id})
     .populate({path: "sections.section"})
     .exec(function(err, superquiz){
-        if(err)
-        return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!superquiz)
         return res.status(422).send({error: "No SuperQuiz exists with the provided _id!"})
         let sections = superquiz.sections
@@ -139,22 +147,26 @@ exports.calcScore = function(req, res, next){
         })
 
         Score.findOne({user: user}, function(err, score){
-            if(err) return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
             if(!score){
                 let newScore = new Score({
                     user: user,
                     scores: [{superquiz: _id, section_score: result}]
                 })
                 newScore.save(function(err, newScore){
-                    if(err)
-                    console.log(err)
+                    if (err) {
+                        return res.send({ error: err})
+                    }
                     else console.log("Score for the user created")
                 })
             }else {
                 score.scores.push({superquiz: _id, section_score: result})
                 score.save(function(err, score){
-                    if(err)
-                    return next(err)
+                    if (err) {
+                        return res.send({ error: err})
+                    }
                     console.log("Score added to the user")
                 })
             }
@@ -167,8 +179,9 @@ exports.calcScore = function(req, res, next){
         let percentile = (100 * other_scores.reduce((acc, v) => acc + (v < user_score ? 1 : 0) + (v === user_score ? 0.5 : 0), 0)) / other_scores.length
         superquiz.scoresTable.set(user_score, superquiz.scoresTable[user_score]+1)
         superquiz.save(function(err, doc){
-            if(err)
-            return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
             Score.findOne({user: user}, function(err, score){
                 if(err)
                 console.log(err)

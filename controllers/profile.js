@@ -30,8 +30,7 @@ exports.getProfile = function(req, res, next){
     var queryOptions = (req.body._id) ? { '_id': req.body._id } : { '_id': req.user._id }
     User.findOne(queryOptions, function(err, user){
         if (err) {
-            res.send({ error: err})
-            return next(err)
+            return res.send({ error: err})
         }
 
         let userInfo = setUserInfo(user)
@@ -68,8 +67,9 @@ exports.editProfile = function(req, res, next){
     const technologies = req.body.technologies
 
     User.findOne({_id: req.user._id}, function(err, user){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!user)
             return res.status(422).send({error: "No user exists with the provided _id!"})
 
@@ -99,8 +99,9 @@ exports.editProfile = function(req, res, next){
         if(technologies)user.tech_experience.technologies = technologies
 
         user.save(function(err, user){
-            if(err)
-                return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
 
             if(image){
                 const thumbnailJob = queue.create('thumbnail', {

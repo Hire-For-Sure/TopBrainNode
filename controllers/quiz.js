@@ -5,8 +5,9 @@ const Quiz = require('../models/quiz'),
 
 exports.getQuizzes = function(req, res, next){
     Quiz.find({...req.query}, function(err, quizzes){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         quizzes.forEach(function(quiz){
             let questions = quiz.questions
             questions.forEach(function(question, index){
@@ -38,8 +39,9 @@ exports.addQuiz = function(req, res, next){
         questions: questions
     })
     quiz.save(function(err, quiz){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
 
         return res.status(201).json(quiz)
     })
@@ -50,7 +52,9 @@ exports.deleteQuiz = function(req, res, next){
     Quiz.findOneAndDelete({
         _id: _id
     }, function(err, quiz){
-        if(err)return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!quiz){
             return res.status(422).send({
                 error: "No Quiz exists with the provided _id!"
@@ -65,8 +69,9 @@ exports.deleteQuiz = function(req, res, next){
 exports.editQuiz = function(req, res, next){
     const _id = req.body._id
     Quiz.findOne({_id: _id}, function(err, quiz){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!quiz)
             return res.status(422).send({error: "No Quiz exists with the provided _id!"})
         const title = req.body.title
@@ -78,8 +83,9 @@ exports.editQuiz = function(req, res, next){
         if(difficulty)quiz.difficulty = difficulty
         if(questions)quiz.questions = questions
         quiz.save(function(err, quiz){
-            if(err)
-                return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
             return res.status(200).json(quiz)
         })
     })
@@ -88,8 +94,9 @@ exports.editQuiz = function(req, res, next){
 exports.addQuestion = function(req, res, next){
     const _id = req.body._id
     Quiz.findOne({_id: _id}, function(err, quiz){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!quiz)
             return res.status(422).send({error: "No Quiz exists with the provided _id!"})
         const text = req.body.text
@@ -107,8 +114,9 @@ exports.addQuestion = function(req, res, next){
 
         if(question) quiz.questions.push(question)
         quiz.save(function(err, quiz){
-            if(err)
-                return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
             return res.status(200).json(quiz)
         })
     })
@@ -120,8 +128,9 @@ exports.calcScore = function(req, res, next){
     let correct_choices = []
     var score = 0
     Quiz.findOne({_id: _id}, function(err, quiz){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!quiz)
             return res.status(422).send({error: "No Quiz exists with the provided _id!"})
         quiz.questions.forEach(function(question, index){

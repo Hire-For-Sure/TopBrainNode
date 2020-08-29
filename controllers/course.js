@@ -4,8 +4,9 @@ const Course = require('./../models/course')
 
 exports.getCourses = function(req, res, next){
     Course.find({...req.query}, function(err, courses){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         return res.status(200).json(courses)
     })
 }
@@ -26,8 +27,9 @@ exports.addCourse = function(req, res, next){
         objectives: objectives
     })
     course.save(function(err, course){
-        if (err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         return res.status(201).json(course)
     })
 }
@@ -37,7 +39,9 @@ exports.deleteCourse = function(req, res, next){
     Course.findOneAndDelete({
         _id: _id
     }, function(err, course){
-        if(err)return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!course){
             return res.status(422).send({
                 error: "No course exists with the provided _id!"
@@ -52,8 +56,9 @@ exports.deleteCourse = function(req, res, next){
 exports.editCourse = function(req, res, next){
     const _id = req.body._id
     Course.findOne({_id: _id}, function(err, course){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!course)
             return res.status(422).send({error: "No course exists with the provided _id!"})
         const name = req.body.name
@@ -63,8 +68,9 @@ exports.editCourse = function(req, res, next){
         if(link)course.link = link
         if(objectives)course.objectives = objectives
         course.save(function(err, course){
-            if(err)
-                return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
             return res.status(200).json(course)
         })
     })

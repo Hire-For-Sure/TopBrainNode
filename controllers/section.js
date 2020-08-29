@@ -5,8 +5,9 @@ const Section = require('../models/section').Section,
 
 exports.getSections = function(req, res, next){
     Section.find({...req.query}, function(err, sections){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         sections.forEach(function(section){
             let questions = section.questions
             questions.forEach(function(question, index){
@@ -19,8 +20,9 @@ exports.getSections = function(req, res, next){
 
 exports.getAdminSections = function(req, res, next){
     Section.find({...req.query}, function(err, sections){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         return res.status(200).json(sections)
     })
 }
@@ -46,8 +48,9 @@ exports.addSection = function(req, res, next){
         questions: questions
     })
     section.save(function(err, section){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
 
         return res.status(201).json(section)
     })
@@ -58,7 +61,9 @@ exports.deleteSection = function(req, res, next){
     Section.findOneAndDelete({
         _id: _id
     }, function(err, section){
-        if(err)return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!section){
             return res.status(422).send({
                 error: "No Section exists with the provided _id!"
@@ -73,8 +78,9 @@ exports.deleteSection = function(req, res, next){
 exports.editSection = function(req, res, next){
     const _id = req.body._id
     Section.findOne({_id: _id}, function(err, section){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!section)
             return res.status(422).send({error: "No Section exists with the provided _id!"})
         const title = req.body.title
@@ -86,8 +92,9 @@ exports.editSection = function(req, res, next){
         if(relevant_content)section.relevant_content = relevant_content
         if(questions)section.questions = questions
         section.save(function(err, section){
-            if(err)
-                return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
             return res.status(200).json(section)
         })
     })
@@ -96,8 +103,9 @@ exports.editSection = function(req, res, next){
 exports.addQuestion = function(req, res, next){
     const _id = req.body._id
     Section.findOne({_id: _id}, function(err, section){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!section)
             return res.status(422).send({error: "No Section exists with the provided _id!"})
         const text = req.body.question
@@ -115,8 +123,9 @@ exports.addQuestion = function(req, res, next){
 
         if(question) section.questions.push(question)
         section.save(function(err, section){
-            if(err)
-                return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
             return res.status(200).json(section)
         })
     })

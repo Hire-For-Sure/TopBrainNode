@@ -4,8 +4,9 @@ const Job = require('./../models/job')
 
 exports.getJobs = function(req, res, next) {
     Job.find({...req.query}, function(err, jobs){
-        if (err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         return res.status(200).json(jobs)
     })
 }
@@ -47,8 +48,9 @@ exports.addJob = function(req, res, next){
       questions: questions
     })
     job.save(function(err, job){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         return res.status(201).json(job)
     })
 }
@@ -58,7 +60,9 @@ exports.deleteJob = function(req, res, next){
     Job.findOneAndDelete({
         _id: _id
     }, function(err, job){
-        if(err){return next(err)}
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!job){
             return res.status(422).send({
                 error: "No job exists with the provided _id!"
@@ -73,8 +77,9 @@ exports.deleteJob = function(req, res, next){
 exports.editJob = function(req, res, next){
     const _id = req.body._id
     Job.findOne({_id: _id}, function(err, job){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!job)
             return res.status(422).send({error: "No job exists with the provided _id!"})
         const title = req.body.title
@@ -94,8 +99,9 @@ exports.editJob = function(req, res, next){
         if(experienceLevel)job.experienceLevel = experienceLevel
         if(questions)job.questions = questions
         job.save(function(err, job){
-            if(err)
-                return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
             res.status(200).json(job)
         })
     })
@@ -104,16 +110,18 @@ exports.editJob = function(req, res, next){
 exports.addResponse = function(req, res, next){
     const _id = req.body._id
     Job.findOne({_id: _id}, function(err, job){
-        if(err)
-            return next(err)
+        if (err) {
+            return res.send({ error: err})
+        }
         if(!job)
             return res.status(422).send({error: "No job exists with the provided _id!"})
         const user_id = req.user._id
         const question_responses = req.body.question_responses
         job.responses.push({user_id: user_id, question_responses: question_responses})
         job.save(function(err, job){
-            if(err)
-                return next(err)
+            if (err) {
+                return res.send({ error: err})
+            }
             res.status(200).json(job)
         })
     })

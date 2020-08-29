@@ -17,7 +17,10 @@ function setUserInfo(request) {
     return {
         _id: request._id,
         profile: request.profile,
-        personalInfo: request.personalInfo
+        personalInfo: request.personalInfo,
+        education: request.education,
+        work_experience: request.work_experience,
+        tech_experience: request.tech_experience
     }
 }
 
@@ -52,7 +55,7 @@ exports.register = function(req, res, next) {
     if (!password) {
         return res.status(422).send({ error: 'You must enter a password.' })
     } else {
-        var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$")
+        var strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$/
         if(!strongRegex.test(password))
             return res.status(422).send({ error: 'Your password must have atleast 8 charactes and include lowercase, uppercase, number and special character(@ $ ! % * ? &).' })
     }
@@ -73,8 +76,9 @@ exports.register = function(req, res, next) {
     })
 
     user.save(function(err, user) {
-        if (err) { return next(err) }
-
+        if (err) {
+            return res.send({ error: err})
+        }
         // Respond with JWT if user was created
         let userInfo = setUserInfo(user)
 

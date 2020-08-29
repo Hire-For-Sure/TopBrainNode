@@ -43,8 +43,7 @@ const requireAdmin = function(req, res, next) {
     if (user.isAdmin === true) {
       return next()
     }
-    res.status(401).json({ error: 'You are not authorized to access this.' })
-    return next('Unauthorized')
+    return res.status(401).json({ error: 'You are not authorized to access this.' })
   })
 }
 
@@ -104,7 +103,7 @@ module.exports = function(app) {
   apiRoutes.post('/image-upload', function(req, res) {
     singleUpload(req, res, function(err) {
       if (err) {
-        return res.status(422).send({errors: [{title: 'Image Upload Error', detail: err}]})
+        return res.status(422).send({error: [{title: 'Image Upload Error', detail: err}]})
       }
 
       return res.json({ imageUrl: req.file.location })
@@ -117,7 +116,7 @@ module.exports = function(app) {
   apiRoutes.post('/file-upload', function(req, res) {
     fileUpload(req, res, function(err) {
       if (err) {
-        return res.status(422).send({errors: [{title: 'File Upload Error', detail: err}]})
+        return res.status(422).send({error: [{title: 'File Upload Error', detail: err}]})
       }
 
       return res.json({ fileUrl: req.file.location })
