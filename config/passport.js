@@ -12,11 +12,11 @@ const localOptions = { usernameField: 'email' }
 const localLogin = new LocalStrategy(localOptions, function(email, password, done) {
   User.findOne({'personalInfo.email': email}, function(err, user) {
     if(err) { return done(err) }
-    if(!user) { return done(null, false, { error: 'Your email could not be verified. Please try again.' }) }
+    if(!user) { return done(null, false, { message: 'Your email could not be verified. Please try again.' }) }
 
     user.comparePassword(password, function(err, isMatch) {
       if (err) { return done(err) }
-      if (!isMatch) { return done(null, false, { error: "Your password could not be verified. Please try again." }) }
+      if (!isMatch) { return done(null, false, { message: "Your password could not be verified. Please try again." }) }
 
       return done(null, user)
     })

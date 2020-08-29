@@ -21,13 +21,20 @@ const AuthenticationController = require('./controllers/authentication'),
       passport = require('passport'),
       cors = require('cors')
 
-
 // Middleware to require login/auth
-const requireAuth = passport.authenticate('jwt', { session: false })
+const requireAuth = function(req, res, next) {
+	passport.authenticate('jwt', { session: false }, function(err, user, info) {
+    	if(err) { return next(err) }
+    	if(!user) { return res.status(401).json({error: info.message}) }
+    	else { req.user = user
+    		next()
+	    }
+	})(req, res, next)
+}
 const requireLogin = function(req, res, next) {
 	passport.authenticate('local', { session: false }, function(err, user, info) {
     	if(err) { return next(err) }
-    	if(!user) { return res.status(401).json({error: info.error}) }
+    	if(!user) { return res.status(401).json({error: info.message}) }
     	else { req.user = user
     		next()
 	    }
